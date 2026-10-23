@@ -8,6 +8,8 @@ out/
 *.iws
 runs/
 */runs/
+run/
+*/run/
 bin/
 .DS_Store
 *.log
