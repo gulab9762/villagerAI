@@ -1,0 +1,169 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Minecraft: Build and Deploy (Fabric)",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                ".\\gradlew.bat buildFabric; if ($LASTEXITCODE -eq 0) { .\\scripts\\deploy.ps1 -Loader fabric }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Minecraft: Start Fabric Client",
+            "type": "shell",
+            "command": "./gradlew",
+            "windows": {
+                "command": ".\\gradlew.bat"
+            },
+            "args": [
+                ":fabric:runClient"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Minecraft: Start Fabric Client (Debug JVM)",
+            "type": "shell",
+            "command": "./gradlew",
+            "windows": {
+                "command": ".\\gradlew.bat"
+            },
+            "args": [
+                ":fabric:runClient",
+                "-PdebugClient"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Minecraft: Start NeoForge Client",
+            "type": "shell",
+            "command": "./gradlew",
+            "windows": {
+                "command": ".\\gradlew.bat"
+            },
+            "args": [
+                ":neoforge:runClient"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Minecraft: Deploy JAR Only (Skip Build)",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                ".\\scripts\\deploy.ps1",
+                "-Loader",
+                "fabric"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Minecraft: Build Fabric Mod",
+            "type": "shell",
+            "command": "./gradlew",
+            "windows": {
+                "command": ".\\gradlew.bat"
+            },
+            "args": [
+                "buildFabric"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Minecraft: Build All Mods",
+            "type": "shell",
+            "command": "./gradlew",
+            "windows": {
+                "command": ".\\gradlew.bat"
+            },
+            "args": [
+                "buildAllMods"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
