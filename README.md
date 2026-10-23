@@ -1,123 +1,58 @@
-# Block Place Animations
+# 🌸 Heavenly Nether
 
-A client-side Minecraft mod (for **Minecraft 26.3** Fabric & NeoForge) that adds fluid, satisfying visual animations when placing blocks in first-person view.
+<p align="center">
+  <img src="icon.png" alt="Heavenly Nether Icon" width="160" height="160" />
+</p>
 
-Inspired by [A Good Place](https://modrinth.com/mod/a-good-place), this mod gives tactile weight and visual feedback to building: blocks visibly travel from the player's held hand to the target placement position, dynamically scaling and rotating into place.
+<p align="center">
+  <strong>Transforms the subterranean world into an ethereal underground paradise with crystal oceans, marble caves, and cherry blossom gardens.</strong>
+</p>
+
+---
+
+## 🌟 Overview
+
+**Heavenly Nether** introduces a standalone celestial dimension (`heavenlynether:heavenly_nether`) without altering or replacing your vanilla Nether. Explore a peaceful, angelic underworld beneath the bedrock featuring crystalline waters, lush cherry blossoms, and radiant quartz caves.
 
 ---
 
 ## ✨ Features
 
-- **Hand-to-Target Flight**:
-  - Dynamically calculates the 3D world coordinates of the player's held hand in first-person perspective, accounting for camera eye position, look direction, yaw, pitch, and player arm orientation (main hand / off hand, right-handed / left-handed).
-- **Dynamic Size Scaling**:
-  - Starts miniature at hand scale (~`0.32x`) and smoothly expands to full block size (`1.0x`) as it approaches the target block location.
-  - Includes a subtle arrival settle bounce for a satisfying snap.
-- **Flight Trajectory & Rotation**:
-  - Smooth cubic ease-out deceleration curve with a parabolic travel arc.
-  - Rotates from the natural tilt of the player's hand to align with the world block grid.
-- **Chunk & Block Entity Occlusion**:
-  - While the block is in transit, it is temporarily hidden from static chunk baking (`SectionCompiler`) and dynamic block entity extraction (`BlockEntityRenderDispatcher`).
-  - Upon arrival, the block is seamlessly committed to the chunk mesh with optional subtle placement particles.
-- **Modern Rendering Pipeline**:
-  - Built natively for Minecraft 26.3 utilizing the modern `SubmitNodeCollector` and `MovingBlockRenderState` pipeline.
-- **Multi-Loader Architecture**:
-  - Clean separation between platform-independent animation logic (`common`), Fabric client implementation (`fabric`), and NeoForge client implementation (`neoforge`).
+- **🌸 Standalone Celestial Dimension**:
+  - Discover lush underground biomes featuring cherry blossom groves, glowing crystals, smooth marble caverns, and vibrant vegetation.
+  - Serene ambient lighting and celestial atmosphere.
+- **🔥 Vanilla Nether Untouched**:
+  - The standard Nether (`minecraft:the_nether`) remains 100% vanilla and unaffected.
+- **🚪 Survival-Friendly Custom Portal**:
+  - Construct a rectangular portal frame using **Quartz Bricks**, **Smooth Quartz**, **Quartz Blocks**, **Chiseled Quartz**, or **Glowstone** (standard 4x5 or larger, up to 21x21; corners are optional).
+  - Ignite it using a **Water Bucket** (classic Aether mechanic) or **Flint and Steel**.
+  - In survival mode, the water bucket cleanly empties into a normal bucket without spilling water.
+  - Filled with glowing, translucent celestial portal blocks emitting white sparkle particles (`END_ROD`) and ambient chimes.
+- **🛡️ Safe Teleportation & Scaling**:
+  - Coordinates scale seamlessly between dimensions ($8:1$).
+  - Automatically searches for nearby exit portals or generates a new 4x5 Quartz Bricks portal with a solid safety platform so you never fall into the void.
+- **⚡ Dual Loader Support**:
+  - Fully compatible with **Fabric** and **NeoForge** on Minecraft 26.3.
 
 ---
 
-## 📁 Project Structure
+## 🛠️ How to Build the Portal
 
-```
-block-place/
-├── build-logic/         # Shared multi-loader Gradle convention plugins
-├── common/              # Platform-agnostic client logic, trajectories & mixins
-│   └── src/main/java/com/blockplace/
-│       ├── BlockPlaceCommon.java
-│       ├── Constants.java
-│       ├── client/
-│       │   ├── animation/
-│       │   │   ├── BlockFlyAnimation.java
-│       │   │   ├── BlockPlacementManager.java
-│       │   │   └── FirstPersonHandHelper.java
-│       │   └── config/
-│       │       └── BlockPlaceConfig.java
-│       └── mixin/
-│           ├── BlockEntityRenderDispatcherMixin.java
-│           ├── BlockItemMixin.java
-│           ├── LevelRendererMixin.java
-│           └── SectionCompilerMixin.java
-├── fabric/              # Fabric loader module
-│   └── src/main/java/com/blockplace/fabric/
-│       ├── BlockPlaceFabric.java
-│       └── client/BlockPlaceFabricClient.java
-└── neoforge/            # NeoForge loader module
-    └── src/main/java/com/blockplace/neoforge/
-        └── BlockPlaceNeoForge.java
-```
+1. **Build the Frame**:
+   Place Quartz Bricks in a vertical rectangle:
+   - Outer dimensions: 4 blocks wide $\times$ 5 blocks high (inner opening: 2 blocks wide $\times$ 3 blocks high).
+   - Frame blocks accepted: *Quartz Bricks, Smooth Quartz, Quartz Blocks, Chiseled Quartz, or Glowstone*.
+2. **Ignite**:
+   - Right-click the inside bottom of the frame with a **Water Bucket** or **Flint and Steel**.
+3. **Step Through**:
+   - Step into the shimmering blue energy to travel to the **Heavenly Nether**!
 
 ---
 
-## 🛠️ VS Code Tasks
+## 📦 Compatibility & Requirements
 
-The project includes pre-configured tasks in [.vscode/tasks.json](file:///c:/Users/Gulab/IdeaProjects/block-place/.vscode/tasks.json) accessible via `Ctrl+Shift+P` -> **Tasks: Run Task** or `Ctrl+Shift+B`:
-
-1. **`Minecraft: Build and Deploy (Fabric)`** *(Default Build Task - `Ctrl+Shift+B`)*:
-   - Builds the Fabric JAR and automatically deploys it to:
-     - Downloads: `C:\Users\Gulab\Downloads\`
-     - MultiMC: `D:\MultiMC\instances\26.3\.minecraft\mods\`
-2. **`Minecraft: Start Fabric Client`** *(Default Test/Run Task)*:
-   - Starts the Fabric 26.3 development game client (`:fabric:runClient`).
-3. **`Minecraft: Start Fabric Client (Debug JVM)`**:
-   - Launches client with debug JVM port enabled for attaching IDE debugger.
-4. **`Minecraft: Deploy JAR Only (Skip Build)`**:
-   - Copies existing built JAR to Downloads and MultiMC without re-compiling.
-5. **`Minecraft: Start NeoForge Client`**:
-   - Starts the NeoForge 26.3 development game client.
-
----
-
-## 🛠️ Building & Running
-
-### Prerequisites
-- **JDK 25** (installed and configured in `gradle.properties`)
-
-### Gradle Commands
-
-- **Build Fabric Mod JAR**:
-  ```powershell
-  .\gradlew.bat buildFabric
-  ```
-  *Output:* `fabric/build/libs/blockplace-fabric-26.3-1.0.0.jar`
-
-- **Run Fabric Client**:
-  ```powershell
-  .\gradlew.bat runFabricClient
-  ```
-
-- **Build NeoForge Mod JAR**:
-  ```powershell
-  .\gradlew.bat buildNeoForge
-  ```
-  *Output:* `neoforge/build/libs/blockplace-neoforge-26.3-1.0.0.jar`
-
-- **Build All Loader JARs**:
-  ```powershell
-  .\gradlew.bat buildAllMods
-  ```
-
----
-
-## ⚙️ Configuration
-
-Animation parameters can be adjusted via [BlockPlaceConfig.java](file:///c:/Users/Gulab/IdeaProjects/block-place/common/src/main/java/com/blockplace/client/config/BlockPlaceConfig.java):
-
-| Option | Default | Description |
-|---|---|---|
-| `durationTicks` | `5` (~250 ms) | Duration of the flight animation in game ticks |
-| `startScale` | `0.32f` | Initial scale when leaving the player hand |
-| `arcHeight` | `0.18f` | Parabolic peak height along trajectory |
-| `initialTiltDegrees` | `25.0f` | Initial rotational tilt from hand angle |
-| `enableSettleBounce` | `true` | Subtle spring bounce upon landing |
-| `enableArrivalParticles`| `true` | Subtle block landing puff |
-| `firstPersonOnly` | `true` | Enable exclusively in first-person camera |
+- **Minecraft**: 26.3
+- **Mod Loaders**:
+  - Fabric (requires Fabric Loader & Fabric API)
+  - NeoForge
+- **Server/Client**: Required on both server and client for custom dimension and portal blocks.
