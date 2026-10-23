@@ -119,7 +119,7 @@
                          "blockplace:spring_nether_closed",
                          "blockplace:ore_gravel_nether",
                          "blockplace:ore_blackstone",
-                         "minecraft:ore_gold_nether",
+                         "blockplace:ore_nether_gold",
                          "blockplace:ore_quartz",
                          "minecraft:ore_ancient_debris_large",
                          "minecraft:ore_debris_small"
@@ -139,3 +139,4 @@
     "has_precipitation":  false,
     "temperature":  2.0
 }
+
