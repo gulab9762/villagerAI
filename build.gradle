@@ -46,3 +46,23 @@ tasks.register('runNeoForgeClient') {
     description = 'Runs the NeoForge development client.'
     dependsOn ':neoforge:runClient'
 }
+
+// Notification Task
+tasks.register('notifyBuildComplete') {
+    group = 'notification'
+    description = 'Sends a notification to ntfy.sh/antigravity upon build completion.'
+    doLast {
+        def ntfyUrl = new URI('https://ntfy.sh/antigravity').toURL()
+        def conn = ntfyUrl.openConnection() as HttpURLConnection
+        conn.requestMethod = 'POST'
+        conn.doOutput = true
+        conn.setRequestProperty('Title', 'Block Place Mod Built')
+        conn.setRequestProperty('Tags', 'white_check_mark,package')
+        conn.outputStream.withWriter('UTF-8') { writer ->
+            writer.write("Block Place mod build finished successfully for Minecraft ${project.minecraft_version}!")
+        }
+        def responseCode = conn.responseCode
+        println "Notification sent to ntfy.sh/antigravity (Status: ${responseCode})"
+    }
+}
+
