@@ -1,9 +1,12 @@
 package com.blockplace.client.animation;
 
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3fc;
 
 public class FirstPersonHandHelper {
 
@@ -15,37 +18,40 @@ public class FirstPersonHandHelper {
      * @return 3D position vector in world coordinates where the held item is located
      */
     public static Vec3 getFirstPersonHandPosition(Player player, InteractionHand hand) {
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 forward = player.getLookAngle();
+        Minecraft client = Minecraft.getInstance();
+        Camera camera = client.gameRenderer.mainCamera();
 
-        float yaw = player.getYRot();
-        double yawRad = Math.toRadians(yaw);
-
-        // Perpendicular horizontal right vector based on camera yaw
-        Vec3 right = new Vec3(-Math.sin(yawRad - Math.PI / 2.0), 0, Math.cos(yawRad - Math.PI / 2.0)).normalize();
-
-        // Local up vector orthogonal to both forward and right vectors
-        Vec3 up = right.cross(forward).normalize();
-
-        // Determine which side (right = +1, left = -1)
         boolean isRightSide = (player.getMainArm() == HumanoidArm.RIGHT);
         if (hand == InteractionHand.OFF_HAND) {
             isRightSide = !isRightSide;
         }
         double sideMultiplier = isRightSide ? 1.0 : -1.0;
 
-        // Visual offsets tuned for first-person perspective:
-        // - Right/Left: offset toward the hand
-        // - Down: positioned below eye level
-        // - Forward: positioned in front of player
-        double sideOffset = 0.36 * sideMultiplier;
-        double downOffset = -0.28;
-        double forwardOffset = 0.40;
+        if (camera.isInitialized() && client.options.getCameraType().isFirstPerson()) {
+            Vec3 camPos = camera.position();
+            Vector3fc forward = camera.forwardVector();
+            Vector3fc up = camera.upVector();
+            Vector3fc left = camera.leftVector(); // Points left in world space
 
-        return eyePos
-                .add(right.scale(sideOffset))
-                .add(up.scale(downOffset))
-                .add(forward.scale(forwardOffset));
+            // In first person:
+            // Forward: slightly ahead of camera
+            // Side: to the right (-left * sideMultiplier)
+            // Down: below camera view (downward along -up)
+            double forwardDist = 0.22;
+            double sideDist = 0.26 * sideMultiplier;
+            double downDist = -0.24;
+
+            return camPos
+                    .add(forward.x() * forwardDist, forward.y() * forwardDist, forward.z() * forwardDist)
+                    .add(-left.x() * sideDist, -left.y() * sideDist, -left.z() * sideDist)
+                    .add(up.x() * downDist, up.y() * downDist, up.z() * downDist);
+        }
+
+        // Fallback (e.g. third-person): position around player torso/hand
+        Vec3 look = player.getLookAngle();
+        return player.position()
+                .add(0, player.getEyeHeight() * 0.65, 0)
+                .add(look.scale(0.3));
     }
 
     /**

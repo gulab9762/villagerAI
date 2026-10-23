@@ -12,3 +12,5 @@ bin/
 .DS_Store
 *.log
 gradle-local.properties
+
+scripts/

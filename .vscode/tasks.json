@@ -32,9 +32,6 @@
             "label": "Minecraft: Start Fabric Client",
             "type": "shell",
             "command": "./gradlew",
-            "windows": {
-                "command": ".\\gradlew.bat"
-            },
             "args": [
                 ":fabric:runClient"
             ],

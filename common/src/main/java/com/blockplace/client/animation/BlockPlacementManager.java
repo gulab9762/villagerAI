@@ -16,20 +16,25 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BlockPlacementManager {
 
     private static final Map<BlockPos, BlockFlyAnimation> ACTIVE_ANIMATIONS = new ConcurrentHashMap<>();
-    private static final Set<BlockPos> HIDDEN_BLOCKS = ConcurrentHashMap.newKeySet();
+    private static final Map<BlockPos, BlockState> HIDDEN_BLOCKS = new ConcurrentHashMap<>();
 
     /**
      * Called when a block is successfully placed by the player.
      */
-    public static void onBlockPlaced(ClientLevel level, Player player, InteractionHand hand, BlockPos pos, BlockState state) {
+    public static void onBlockPlaced(ClientLevel level, Player player, InteractionHand hand, BlockPos pos, BlockState state, BlockState replacedState) {
         Minecraft client = Minecraft.getInstance();
+
+        // If animations are disabled, keep pure vanilla placement
+        if (BlockPlaceConfig.style == BlockPlaceConfig.AnimationStyle.NONE) {
+            return;
+        }
 
         // Check if first-person perspective requirement is met
         if (BlockPlaceConfig.firstPersonOnly && !client.options.getCameraType().isFirstPerson()) {
@@ -47,11 +52,12 @@ public class BlockPlacementManager {
 
         BlockFlyAnimation animation = new BlockFlyAnimation(level, pos, state, startHandPos, sideMultiplier);
 
-        // Hide the block at target destination in chunk rendering while it is flying
-        HIDDEN_BLOCKS.add(pos);
+        // Hide the block at target destination in chunk rendering while it is flying,
+        // by making RenderSectionRegion return the replaced state (air) to avoid any x-ray hole.
+        HIDDEN_BLOCKS.put(pos, replacedState != null ? replacedState : Blocks.AIR.defaultBlockState());
         BlockFlyAnimation old = ACTIVE_ANIMATIONS.put(pos, animation);
         if (old != null) {
-            // Cancel previous animation if any
+            // Replaced previous animation
         }
     }
 
@@ -59,7 +65,14 @@ public class BlockPlacementManager {
      * Checks if a block at given position is currently hidden due to an active placement flight.
      */
     public static boolean isBlockHidden(BlockPos pos) {
-        return HIDDEN_BLOCKS.contains(pos);
+        return HIDDEN_BLOCKS.containsKey(pos);
+    }
+
+    /**
+     * Returns the replaced block state (usually Air) while the position is hidden.
+     */
+    public static BlockState getHiddenBlockReplacedState(BlockPos pos) {
+        return HIDDEN_BLOCKS.get(pos);
     }
 
     /**
@@ -79,6 +92,7 @@ public class BlockPlacementManager {
             // If level block changed unexpectedly, abort animation
             if (level.getBlockState(pos) != anim.getBlockState()) {
                 HIDDEN_BLOCKS.remove(pos);
+                level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), Block.UPDATE_ALL_IMMEDIATE);
                 return true;
             }
 
@@ -100,7 +114,7 @@ public class BlockPlacementManager {
         HIDDEN_BLOCKS.remove(pos);
 
         // Notify client world that the block state is ready to render in baked chunk
-        level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 
         // Optional subtle arrival particles
         if (BlockPlaceConfig.enableArrivalParticles) {

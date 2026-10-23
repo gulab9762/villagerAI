@@ -9,7 +9,7 @@
   "client": [
     "BlockEntityRenderDispatcherMixin",
     "LevelRendererMixin",
-    "SectionCompilerMixin"
+    "RenderSectionRegionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
