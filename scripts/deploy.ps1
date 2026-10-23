@@ -1,4 +1,4 @@
-param (
+﻿param (
     [string]$Loader = "fabric",
     [string]$MultiMcModsDir = "D:\MultiMC\instances\26.3\.minecraft\mods",
     [string]$DownloadsDir = "$env:USERPROFILE\Downloads"
@@ -7,7 +7,7 @@ param (
 $ErrorActionPreference = "Stop"
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Deploying Block Place Mod [$Loader]" -ForegroundColor Cyan
+Write-Host " Deploying Heavenly Nether Mod [$Loader]" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 $searchPath = if ($Loader -eq "neoforge") { "neoforge\build\libs" } else { "fabric\build\libs" }
@@ -17,7 +17,7 @@ if (-not (Test-Path $searchPath)) {
     exit 1
 }
 
-$jar = Get-ChildItem -Path $searchPath -Filter "blockplace-*.jar" | 
+$jar = Get-ChildItem -Path $searchPath -Filter "heavenlynether-*.jar" | 
     Where-Object { $_.Name -notmatch "sources|javadoc" } | 
     Sort-Object LastWriteTime -Descending | 
     Select-Object -First 1
@@ -30,18 +30,17 @@ if (-not $jar) {
 $jarName = $jar.Name
 Write-Host "[OK] Found Mod JAR: $jarName" -ForegroundColor Green
 
-# 1. Deploy to Downloads
+# 1. Clean previous old mod jars from target directories
 if (Test-Path $DownloadsDir) {
+    Get-ChildItem -Path $DownloadsDir -Filter "blockplace-*.jar" | Remove-Item -Force -ErrorAction SilentlyContinue
     Copy-Item -Path $jar.FullName -Destination $DownloadsDir -Force
     Write-Host "[OK] Copied to Downloads -> $DownloadsDir\$jarName" -ForegroundColor Green
-} else {
-    Write-Warning "Downloads directory not found: $DownloadsDir"
 }
 
-# 2. Deploy to MultiMC instance on D: drive
 if (-not (Test-Path $MultiMcModsDir)) {
     New-Item -ItemType Directory -Path $MultiMcModsDir -Force | Out-Null
 }
+Get-ChildItem -Path $MultiMcModsDir -Filter "blockplace-*.jar" | Remove-Item -Force -ErrorAction SilentlyContinue
 Copy-Item -Path $jar.FullName -Destination $MultiMcModsDir -Force
 Write-Host "[OK] Copied to MultiMC  -> $MultiMcModsDir\$jarName" -ForegroundColor Green
 
