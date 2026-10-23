@@ -40,8 +40,15 @@ public class HeavenlyPortalBlock extends Block implements Portal {
     protected static final VoxelShape X_AABB = Block.box(0.0, 0.0, 6.0, 16.0, 16.0, 10.0);
     protected static final VoxelShape Z_AABB = Block.box(6.0, 0.0, 0.0, 10.0, 16.0, 16.0);
 
+    public static final ResourceKey<Block> PORTAL_KEY = ResourceKey.create(
+            Registries.BLOCK,
+            Identifier.fromNamespaceAndPath(Constants.MOD_ID, "heavenly_portal")
+    );
+
     public HeavenlyPortalBlock() {
         super(BlockBehaviour.Properties.of()
+                .setId(PORTAL_KEY)
+                .noLootTable()
                 .noCollision()
                 .strength(-1.0F)
                 .sound(SoundType.AMETHYST)

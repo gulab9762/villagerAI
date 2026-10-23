@@ -29,7 +29,7 @@ public class HeavenlyNetherFabric implements ModInitializer {
         // Register custom Heavenly Portal block
         HeavenlyNetherBlocks.HEAVENLY_PORTAL = Registry.register(
                 BuiltInRegistries.BLOCK,
-                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "heavenly_portal"),
+                HeavenlyPortalBlock.PORTAL_KEY,
                 new HeavenlyPortalBlock()
         );
 
