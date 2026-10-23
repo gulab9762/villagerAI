@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
@@ -50,7 +51,7 @@ public class HeavenlyPortalShape {
     }
 
     private static boolean isAirOrPortal(BlockState state) {
-        return state.isAir() || state.is(HeavenlyNetherBlocks.HEAVENLY_PORTAL);
+        return state.isAir() || state.getBlock() instanceof HeavenlyPortalBlock;
     }
 
     public static boolean tryIgnite(Level level, BlockPos startPos) {
@@ -177,7 +178,11 @@ public class HeavenlyPortalShape {
     }
 
     public void createPortalBlocks(Level level) {
-        BlockState portalState = HeavenlyNetherBlocks.HEAVENLY_PORTAL.defaultBlockState().setValue(HeavenlyPortalBlock.AXIS, this.axis);
+        Block portalBlock = HeavenlyNetherBlocks.getHeavenlyPortal();
+        if (portalBlock == null) {
+            return;
+        }
+        BlockState portalState = portalBlock.defaultBlockState().setValue(HeavenlyPortalBlock.AXIS, this.axis);
         for (int w = 0; w < this.width; w++) {
             for (int h = 0; h < this.height; h++) {
                 BlockPos pos = this.bottomLeftAir.relative(this.rightDir, w).above(h);
@@ -257,9 +262,9 @@ public class HeavenlyPortalShape {
                 for (int y = minY; y <= maxY; y++) {
                     mutable.set(cx, y, cz);
                     BlockState state = level.getBlockState(mutable);
-                    if (state.is(HeavenlyNetherBlocks.HEAVENLY_PORTAL)) {
+                    if (state.getBlock() instanceof HeavenlyPortalBlock) {
                         BlockPos bottom = mutable.immutable();
-                        while (level.getBlockState(bottom.below()).is(HeavenlyNetherBlocks.HEAVENLY_PORTAL)) {
+                        while (level.getBlockState(bottom.below()).getBlock() instanceof HeavenlyPortalBlock) {
                             bottom = bottom.below();
                         }
                         double distSq = (cx - targetX) * (cx - targetX) + (cz - targetZ) * (cz - targetZ);
@@ -313,7 +318,8 @@ public class HeavenlyPortalShape {
         }
 
         BlockState frameState = Blocks.QUARTZ_BRICKS.defaultBlockState();
-        BlockState portalState = HeavenlyNetherBlocks.HEAVENLY_PORTAL.defaultBlockState().setValue(HeavenlyPortalBlock.AXIS, Direction.Axis.X);
+        Block portalBlock = HeavenlyNetherBlocks.getHeavenlyPortal();
+        BlockState portalState = (portalBlock != null ? portalBlock : Blocks.AIR).defaultBlockState().setValue(HeavenlyPortalBlock.AXIS, Direction.Axis.X);
 
         // 1. Build a solid 6x5 Quartz platform underneath at safeY - 1
         for (int x = -1; x <= 4; x++) {
