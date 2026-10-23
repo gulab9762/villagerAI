@@ -1,4 +1,4 @@
-{
+﻿{
   "debug_functions": [
     {
       "function": {
@@ -72,7 +72,7 @@
   "default_fluid": "minecraft:water",
   "disable_mob_generation": false,
   "legacy_random_source": true,
-  "material_rule": "minecraft:nether",
+  "material_rule": "blockplace:heavenly_nether",
   "noise": {
     "height": 128,
     "min_y": 0
@@ -145,3 +145,4 @@
   "sea_level": 32,
   "spawn_target": []
 }
+

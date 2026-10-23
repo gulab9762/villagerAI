@@ -78,6 +78,18 @@ public class BlockPlaceNeoForge {
                             )
                             .executes(context -> showCurrentStyle(context.getSource()))
             );
+
+            event.getDispatcher().register(
+                    Commands.literal("heaven")
+                            .executes(context -> {
+                                Minecraft client = Minecraft.getInstance();
+                                if (client.getConnection() != null) {
+                                    client.getConnection().sendCommand("execute in blockplace:heavenly_nether run tp @s 0 70 0");
+                                    context.getSource().sendSuccess(() -> Component.literal("§a[Heavenly Nether] §fTeleporting to Heavenly Nether..."), false);
+                                }
+                                return 1;
+                            })
+            );
         }
 
         private static int toggleAnimation(CommandSourceStack source) {

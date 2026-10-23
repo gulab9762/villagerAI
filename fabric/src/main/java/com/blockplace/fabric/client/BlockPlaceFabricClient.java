@@ -75,6 +75,18 @@ public class BlockPlaceFabricClient implements ClientModInitializer {
                             )
                             .executes(context -> showCurrentStyle(context.getSource()))
             );
+
+            dispatcher.register(
+                    ClientCommands.literal("heaven")
+                            .executes(context -> {
+                                var client = context.getSource().getClient();
+                                if (client.getConnection() != null) {
+                                    client.getConnection().sendCommand("heaven");
+                                    context.getSource().sendFeedback(Component.literal("§a[Heavenly Nether] §fTeleporting to Heavenly Nether..."));
+                                }
+                                return 1;
+                            })
+            );
         });
     }
 

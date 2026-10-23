@@ -2,14 +2,14 @@
     "attributes":  {
                        "minecraft:audio/ambient_sounds":  {
                                                               "additions":  {
-                                                                                "sound":  "minecraft:ambient.crimson_forest.additions",
+                                                                                "sound":  "minecraft:ambient.basalt_deltas.additions",
                                                                                 "tick_chance":  0.0111
                                                                             },
-                                                              "loop":  "minecraft:ambient.crimson_forest.loop",
+                                                              "loop":  "minecraft:ambient.basalt_deltas.loop",
                                                               "mood":  {
                                                                            "block_search_extent":  8,
                                                                            "offset":  2.0,
-                                                                           "sound":  "minecraft:ambient.crimson_forest.mood",
+                                                                           "sound":  "minecraft:ambient.basalt_deltas.mood",
                                                                            "tick_delay":  6000
                                                                        }
                                                           },
@@ -17,7 +17,7 @@
                                                                 "default":  {
                                                                                 "max_delay":  24000,
                                                                                 "min_delay":  12000,
-                                                                                "sound":  "minecraft:music.nether.crimson_forest"
+                                                                                "sound":  "minecraft:music.nether.basalt_deltas"
                                                                             }
                                                             },
                        "minecraft:gameplay/natural_mob_spawns":  {
@@ -39,31 +39,18 @@
                                                                                                                               ],
                                                                                                                  "monster":  [
                                                                                                                                  {
-                                                                                                                                     "type":  "minecraft:zombified_piglin",
+                                                                                                                                     "type":  "minecraft:ghast",
+                                                                                                                                     "count":  1,
+                                                                                                                                     "weight":  40
+                                                                                                                                 },
+                                                                                                                                 {
+                                                                                                                                     "type":  "minecraft:magma_cube",
                                                                                                                                      "count":  {
                                                                                                                                                    "type":  "minecraft:uniform",
-                                                                                                                                                   "max_inclusive":  4,
+                                                                                                                                                   "max_inclusive":  5,
                                                                                                                                                    "min_inclusive":  2
                                                                                                                                                },
-                                                                                                                                     "weight":  1
-                                                                                                                                 },
-                                                                                                                                 {
-                                                                                                                                     "type":  "minecraft:hoglin",
-                                                                                                                                     "count":  {
-                                                                                                                                                   "type":  "minecraft:uniform",
-                                                                                                                                                   "max_inclusive":  4,
-                                                                                                                                                   "min_inclusive":  3
-                                                                                                                                               },
-                                                                                                                                     "weight":  9
-                                                                                                                                 },
-                                                                                                                                 {
-                                                                                                                                     "type":  "minecraft:piglin",
-                                                                                                                                     "count":  {
-                                                                                                                                                   "type":  "minecraft:uniform",
-                                                                                                                                                   "max_inclusive":  4,
-                                                                                                                                                   "min_inclusive":  3
-                                                                                                                                               },
-                                                                                                                                     "weight":  5
+                                                                                                                                     "weight":  100
                                                                                                                                  }
                                                                                                                              ]
                                                                                                              }
@@ -74,19 +61,19 @@
                                                                   "argument":  [
                                                                                    {
                                                                                        "particle":  {
-                                                                                                        "type":  "minecraft:cherry_leaves"
+                                                                                                        "type":  "minecraft:white_ash"
                                                                                                     },
-                                                                                       "probability":  0.025
+                                                                                       "probability":  0.118093334
                                                                                    }
                                                                                ],
                                                                   "modifier":  "append"
                                                               },
-                       "minecraft:visual/fog_color":  "#fed7e2"
+                       "minecraft:visual/fog_color":  "#bae6fd"
                    },
     "carvers":  "minecraft:nether_cave",
     "downfall":  0.0,
     "effects":  {
-                    "water_color":  "#f472b6"
+                    "water_color":  "#0ea5e9"
                 },
     "features":  [
                      [
@@ -102,7 +89,9 @@
 
                      ],
                      [
-
+                         "minecraft:delta",
+                         "minecraft:small_basalt_columns",
+                         "minecraft:large_basalt_columns"
                      ],
                      [
 
@@ -111,29 +100,21 @@
 
                      ],
                      [
-                         "minecraft:spring_open",
-                         "minecraft:patch_fire",
-                         "minecraft:glowstone_extra",
-                         "minecraft:glowstone",
-                         "minecraft:ore_magma",
-                         "minecraft:spring_closed",
-                         "minecraft:ore_gravel_nether",
-                         "minecraft:ore_blackstone",
-                         "minecraft:ore_gold_nether",
-                         "minecraft:ore_quartz_nether",
+                         "minecraft:basalt_blobs",
+                         "minecraft:blackstone_blobs",
+                         "minecraft:spring_delta",
+                         "blockplace:patch_fire",
+                         "blockplace:patch_soul_fire",
+                         "blockplace:glowstone_extra",
+                         "blockplace:glowstone",
+                         "minecraft:brown_mushroom_nether",
+                         "minecraft:red_mushroom_nether",
+                         "blockplace:ore_magma",
+                         "minecraft:spring_closed_double",
+                         "minecraft:ore_gold_deltas",
+                         "minecraft:ore_quartz_deltas",
                          "minecraft:ore_ancient_debris_large",
                          "minecraft:ore_debris_small"
-                     ],
-                     [
-
-                     ],
-                     [
-                         "minecraft:spring_lava",
-                         "minecraft:brown_mushroom_normal",
-                         "minecraft:red_mushroom_normal",
-                         "minecraft:weeping_vines",
-                         "minecraft:crimson_fungi",
-                         "minecraft:crimson_forest_vegetation"
                      ]
                  ],
     "has_precipitation":  false,

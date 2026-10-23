@@ -2,14 +2,14 @@
     "attributes":  {
                        "minecraft:audio/ambient_sounds":  {
                                                               "additions":  {
-                                                                                "sound":  "minecraft:ambient.warped_forest.additions",
+                                                                                "sound":  "minecraft:ambient.soul_sand_valley.additions",
                                                                                 "tick_chance":  0.0111
                                                                             },
-                                                              "loop":  "minecraft:ambient.warped_forest.loop",
+                                                              "loop":  "minecraft:ambient.soul_sand_valley.loop",
                                                               "mood":  {
                                                                            "block_search_extent":  8,
                                                                            "offset":  2.0,
-                                                                           "sound":  "minecraft:ambient.warped_forest.mood",
+                                                                           "sound":  "minecraft:ambient.soul_sand_valley.mood",
                                                                            "tick_delay":  6000
                                                                        }
                                                           },
@@ -17,16 +17,28 @@
                                                                 "default":  {
                                                                                 "max_delay":  24000,
                                                                                 "min_delay":  12000,
-                                                                                "sound":  "minecraft:music.nether.warped_forest"
+                                                                                "sound":  "minecraft:music.nether.soul_sand_valley"
                                                                             }
                                                             },
                        "minecraft:gameplay/natural_mob_spawns":  {
                                                                      "argument":  {
                                                                                       "spawn_costs":  {
                                                                                                           "minecraft:enderman":  {
-                                                                                                                                     "charge":  1.0,
-                                                                                                                                     "energy_budget":  0.12
-                                                                                                                                 }
+                                                                                                                                     "charge":  0.7,
+                                                                                                                                     "energy_budget":  0.15
+                                                                                                                                 },
+                                                                                                          "minecraft:ghast":  {
+                                                                                                                                  "charge":  0.7,
+                                                                                                                                  "energy_budget":  0.15
+                                                                                                                              },
+                                                                                                          "minecraft:skeleton":  {
+                                                                                                                                     "charge":  0.7,
+                                                                                                                                     "energy_budget":  0.15
+                                                                                                                                 },
+                                                                                                          "minecraft:strider":  {
+                                                                                                                                    "charge":  0.7,
+                                                                                                                                    "energy_budget":  0.15
+                                                                                                                                }
                                                                                                       },
                                                                                       "spawns_by_category":  {
                                                                                                                  "creature":  [
@@ -42,6 +54,16 @@
                                                                                                                               ],
                                                                                                                  "monster":  [
                                                                                                                                  {
+                                                                                                                                     "type":  "minecraft:skeleton",
+                                                                                                                                     "count":  5,
+                                                                                                                                     "weight":  20
+                                                                                                                                 },
+                                                                                                                                 {
+                                                                                                                                     "type":  "minecraft:ghast",
+                                                                                                                                     "count":  4,
+                                                                                                                                     "weight":  50
+                                                                                                                                 },
+                                                                                                                                 {
                                                                                                                                      "type":  "minecraft:enderman",
                                                                                                                                      "count":  4,
                                                                                                                                      "weight":  1
@@ -55,19 +77,19 @@
                                                                   "argument":  [
                                                                                    {
                                                                                        "particle":  {
-                                                                                                        "type":  "minecraft:warped_spore"
+                                                                                                        "type":  "minecraft:ash"
                                                                                                     },
-                                                                                       "probability":  0.01428
+                                                                                       "probability":  0.00625
                                                                                    }
                                                                                ],
                                                                   "modifier":  "append"
                                                               },
-                       "minecraft:visual/fog_color":  "#ccfbf1"
+                       "minecraft:visual/fog_color":  "#e0d4f7"
                    },
     "carvers":  "minecraft:nether_cave",
     "downfall":  0.0,
     "effects":  {
-                    "water_color":  "#2dd4bf"
+                    "water_color":  "#818cf8"
                 },
     "features":  [
                      [
@@ -77,7 +99,7 @@
 
                      ],
                      [
-
+                         "minecraft:basalt_pillar"
                      ],
                      [
 
@@ -92,17 +114,19 @@
 
                      ],
                      [
-                         "minecraft:spring_open",
-                         "minecraft:patch_fire",
-                         "minecraft:patch_soul_fire",
-                         "minecraft:glowstone_extra",
-                         "minecraft:glowstone",
-                         "minecraft:ore_magma",
-                         "minecraft:spring_closed",
-                         "minecraft:ore_gravel_nether",
-                         "minecraft:ore_blackstone",
+                         "blockplace:spring_nether_open",
+                         "blockplace:patch_fire",
+                         "blockplace:patch_soul_fire",
+                         "blockplace:glowstone_extra",
+                         "blockplace:glowstone",
+                         "minecraft:patch_crimson_roots",
+                         "blockplace:ore_magma",
+                         "blockplace:spring_nether_closed",
+                         "minecraft:ore_soul_sand",
+                         "blockplace:ore_gravel_nether",
+                         "blockplace:ore_blackstone",
                          "minecraft:ore_gold_nether",
-                         "minecraft:ore_quartz_nether",
+                         "blockplace:ore_quartz",
                          "minecraft:ore_ancient_debris_large",
                          "minecraft:ore_debris_small"
                      ],
@@ -110,13 +134,7 @@
 
                      ],
                      [
-                         "minecraft:spring_lava",
-                         "minecraft:brown_mushroom_normal",
-                         "minecraft:red_mushroom_normal",
-                         "minecraft:warped_fungi",
-                         "minecraft:warped_forest_vegetation",
-                         "minecraft:nether_sprouts",
-                         "minecraft:twisting_vines"
+                         "blockplace:spring_lava_nether"
                      ]
                  ],
     "has_precipitation":  false,

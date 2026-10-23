@@ -1,5 +1,5 @@
-﻿{
-  "feature": "minecraft:glowstone_extra",
+{
+  "feature": "blockplace:glowstone_extra",
   "placement": [
     {
       "type": "minecraft:count",

@@ -1,0 +1,72 @@
+﻿{
+  "type": "blockplace:heavenly_nether",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "blockplace:heavenly_nether",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "blockplace:heavenly_wastes",
+          "parameters": {
+            "temperature": 0.0,
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "blockplace:crystal_valley",
+          "parameters": {
+            "temperature": 0.0,
+            "humidity": -0.5,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "blockplace:cherry_haven",
+          "parameters": {
+            "temperature": 0.4,
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "blockplace:azalea_haven",
+          "parameters": {
+            "temperature": 0.0,
+            "humidity": 0.5,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.375
+          }
+        },
+        {
+          "biome": "blockplace:prismarine_deltas",
+          "parameters": {
+            "temperature": -0.5,
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.175
+          }
+        }
+      ]
+    }
+  }
+}
