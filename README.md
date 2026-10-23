@@ -58,6 +58,25 @@ block-place/
 
 ---
 
+## 🛠️ VS Code Tasks
+
+The project includes pre-configured tasks in [.vscode/tasks.json](file:///c:/Users/Gulab/IdeaProjects/block-place/.vscode/tasks.json) accessible via `Ctrl+Shift+P` -> **Tasks: Run Task** or `Ctrl+Shift+B`:
+
+1. **`Minecraft: Build and Deploy (Fabric)`** *(Default Build Task - `Ctrl+Shift+B`)*:
+   - Builds the Fabric JAR and automatically deploys it to:
+     - Downloads: `C:\Users\Gulab\Downloads\`
+     - MultiMC: `D:\MultiMC\instances\26.3\.minecraft\mods\`
+2. **`Minecraft: Start Fabric Client`** *(Default Test/Run Task)*:
+   - Starts the Fabric 26.3 development game client (`:fabric:runClient`).
+3. **`Minecraft: Start Fabric Client (Debug JVM)`**:
+   - Launches client with debug JVM port enabled for attaching IDE debugger.
+4. **`Minecraft: Deploy JAR Only (Skip Build)`**:
+   - Copies existing built JAR to Downloads and MultiMC without re-compiling.
+5. **`Minecraft: Start NeoForge Client`**:
+   - Starts the NeoForge 26.3 development game client.
+
+---
+
 ## 🛠️ Building & Running
 
 ### Prerequisites
