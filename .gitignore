@@ -1,0 +1,14 @@
+.gradle/
+build/
+*/build/
+out/
+.idea/
+*.iml
+*.ipr
+*.iws
+runs/
+*/runs/
+bin/
+.DS_Store
+*.log
+gradle-local.properties
