@@ -1,9 +1,16 @@
 package com.heavenlynether.fabric;
 
+import com.heavenlynether.Constants;
 import com.heavenlynether.HeavenlyNetherCommon;
+import com.heavenlynether.block.HeavenlyNetherBlocks;
+import com.heavenlynether.block.HeavenlyPortalActivator;
+import com.heavenlynether.block.HeavenlyPortalBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -19,6 +26,24 @@ public class HeavenlyNetherFabric implements ModInitializer {
     public void onInitialize() {
         HeavenlyNetherCommon.init();
 
+        // Register custom Heavenly Portal block
+        HeavenlyNetherBlocks.HEAVENLY_PORTAL = Registry.register(
+                BuiltInRegistries.BLOCK,
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "heavenly_portal"),
+                new HeavenlyPortalBlock()
+        );
+
+        // Survival right-click ignition (Water bucket or Flint & Steel)
+        UseBlockCallback.EVENT.register((player, level, hand, hitResult) ->
+                HeavenlyPortalActivator.onUseItemOnBlock(
+                        player,
+                        level,
+                        hand,
+                        hitResult.getBlockPos(),
+                        hitResult.getDirection()
+                )
+        );
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(
                     Commands.literal("heaven")
@@ -27,7 +52,7 @@ public class HeavenlyNetherFabric implements ModInitializer {
                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                     ResourceKey<Level> dimKey = ResourceKey.create(
                                             Registries.DIMENSION,
-                                            Identifier.fromNamespaceAndPath("heavenlynether", "heavenly_nether")
+                                            Identifier.fromNamespaceAndPath(Constants.MOD_ID, "heavenly_nether")
                                     );
                                     ServerLevel targetLevel = context.getSource().getServer().getLevel(dimKey);
                                     if (targetLevel != null) {

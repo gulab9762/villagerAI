@@ -1,0 +1,10 @@
+﻿{
+  "variants": {
+    "axis=x": {
+      "model": "heavenlynether:block/heavenly_portal_ew"
+    },
+    "axis=z": {
+      "model": "heavenlynether:block/heavenly_portal_ns"
+    }
+  }
+}
