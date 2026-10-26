@@ -1,3 +1,5 @@
 {
-  "mod.villagerai.name": "Villager AI"
+  "mod.villagerai.name": "Villager AI",
+  "key.villagerai.stats": "Show Villager Stats",
+  "key.categories.villagerai": "Villager AI"
 }
