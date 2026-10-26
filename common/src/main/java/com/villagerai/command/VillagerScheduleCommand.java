@@ -8,8 +8,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -52,6 +55,11 @@ public class VillagerScheduleCommand {
                     Commands.literal("toggle-roam")
                         .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .executes(VillagerScheduleCommand::executeToggleRoam)
+                )
+                .then(
+                    Commands.literal("clear-targets")
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(VillagerScheduleCommand::executeClearTargets)
                 )
                 .then(
                     Commands.literal("reload")
@@ -98,11 +106,20 @@ public class VillagerScheduleCommand {
         config.disableRoaming = !config.disableRoaming;
         VillagerAIConfig.save();
 
+        int count = refreshAllLoadedVillagers(source.getServer());
+
         if (config.disableRoaming) {
-            source.sendSuccess(() -> Component.literal("§a[Villager AI] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put)."), true);
+            source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put). Refreshed %d villager(s).", count)), true);
         } else {
-            source.sendSuccess(() -> Component.literal("§e[Villager AI] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active)."), true);
+            source.sendSuccess(() -> Component.literal(String.format("§e[Villager AI] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active). Refreshed %d villager(s).", count)), true);
         }
+        return 1;
+    }
+
+    private static int executeClearTargets(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        int count = refreshAllLoadedVillagers(source.getServer());
+        source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fCleared active targets and refreshed %d villager(s).", count)), true);
         return 1;
     }
 
@@ -110,9 +127,26 @@ public class VillagerScheduleCommand {
         CommandSourceStack source = context.getSource();
         VillagerAIConfig.load();
         boolean noRoam = VillagerAIConfig.get().disableRoaming;
-        source.sendSuccess(() -> Component.literal("§a[Villager AI] §fConfig reloaded. Roaming override: " +
-            (noRoam ? "§aActive (No Roam)" : "§eInactive (Vanilla Roam)")), true);
+        int count = refreshAllLoadedVillagers(source.getServer());
+        source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fConfig reloaded. Roaming override: %s§f. Refreshed %d villager(s).",
+            (noRoam ? "§aActive (No Roam)" : "§eInactive (Vanilla Roam)"), count)), true);
         return 1;
+    }
+
+    public static int refreshAllLoadedVillagers(MinecraftServer server) {
+        int count = 0;
+        for (ServerLevel level : server.getAllLevels()) {
+            List<? extends Villager> villagers = level.getEntities(EntityTypes.VILLAGER, LivingEntity::isAlive);
+            for (Villager villager : villagers) {
+                villager.getNavigation().stop();
+                villager.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                villager.getBrain().eraseMemory(MemoryModuleType.INTERACTION_TARGET);
+                villager.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+                villager.refreshBrain(level);
+                count++;
+            }
+        }
+        return count;
     }
 
     private static Villager findTargetVillager(ServerPlayer player) {
