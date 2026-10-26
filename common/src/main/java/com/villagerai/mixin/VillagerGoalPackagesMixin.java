@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import com.villagerai.config.VillagerAIConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,6 +41,9 @@ public abstract class VillagerGoalPackagesMixin {
      */
     @Inject(method = "getIdlePackage", at = @At("HEAD"), cancellable = true)
     private static void onGetIdlePackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().disableRoaming) {
+            return;
+        }
         cir.setReturnValue(
             ImmutableList.of(
                 Pair.of(
@@ -94,6 +98,9 @@ public abstract class VillagerGoalPackagesMixin {
      */
     @Inject(method = "getWorkPackage", at = @At("HEAD"), cancellable = true)
     private static void onGetWorkPackage(Holder<VillagerProfession> profession, float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableWorkRoaming) {
+            return;
+        }
         WorkAtPoi workAtPoi;
         if (profession.is(VillagerProfession.FARMER)) {
             workAtPoi = new WorkAtComposter();
@@ -132,6 +139,9 @@ public abstract class VillagerGoalPackagesMixin {
      */
     @Inject(method = "getMeetPackage", at = @At("HEAD"), cancellable = true)
     private static void onGetMeetPackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableBellRoaming) {
+            return;
+        }
         cir.setReturnValue(
             ImmutableList.of(
                 Pair.of(2, SocializeAtBell.create()),
@@ -162,6 +172,9 @@ public abstract class VillagerGoalPackagesMixin {
      */
     @Inject(method = "getRestPackage", at = @At("HEAD"), cancellable = true)
     private static void onGetRestPackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableRestRoaming) {
+            return;
+        }
         cir.setReturnValue(
             ImmutableList.of(
                 Pair.of(2, SetWalkTargetFromBlockMemory.create(MemoryModuleType.HOME, speedModifier, 1, 150, 1200)),
@@ -190,6 +203,9 @@ public abstract class VillagerGoalPackagesMixin {
      */
     @Inject(method = "getPlayPackage", at = @At("HEAD"), cancellable = true)
     private static void onGetPlayPackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableBabyRoaming) {
+            return;
+        }
         cir.setReturnValue(
             ImmutableList.of(
                 Pair.of(0, new MoveToTargetSink(80, 120)),

@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import com.villagerai.config.VillagerAIConfig;
+
 public class VillagerScheduleCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -45,6 +47,16 @@ public class VillagerScheduleCommand {
                 .then(
                     Commands.literal("calendar")
                         .executes(VillagerScheduleCommand::executeCalendar)
+                )
+                .then(
+                    Commands.literal("toggle-roam")
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(VillagerScheduleCommand::executeToggleRoam)
+                )
+                .then(
+                    Commands.literal("reload")
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(VillagerScheduleCommand::executeReload)
                 )
         );
     }
@@ -78,6 +90,29 @@ public class VillagerScheduleCommand {
 
     private static int executeCalendar(CommandContext<CommandSourceStack> context) {
         return showCalendar(context.getSource());
+    }
+
+    private static int executeToggleRoam(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        VillagerAIConfig config = VillagerAIConfig.get();
+        config.disableRoaming = !config.disableRoaming;
+        VillagerAIConfig.save();
+
+        if (config.disableRoaming) {
+            source.sendSuccess(() -> Component.literal("§a[Villager AI] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put)."), true);
+        } else {
+            source.sendSuccess(() -> Component.literal("§e[Villager AI] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active)."), true);
+        }
+        return 1;
+    }
+
+    private static int executeReload(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        VillagerAIConfig.load();
+        boolean noRoam = VillagerAIConfig.get().disableRoaming;
+        source.sendSuccess(() -> Component.literal("§a[Villager AI] §fConfig reloaded. Roaming override: " +
+            (noRoam ? "§aActive (No Roam)" : "§eInactive (Vanilla Roam)")), true);
+        return 1;
     }
 
     private static Villager findTargetVillager(ServerPlayer player) {
@@ -122,12 +157,16 @@ public class VillagerScheduleCommand {
         Optional<GlobalPos> meeting = brain.getMemory(MemoryModuleType.MEETING_POINT);
         Optional<WalkTarget> walkTarget = brain.getMemory(MemoryModuleType.WALK_TARGET);
 
+        boolean noRoam = VillagerAIConfig.get().disableRoaming;
+
         source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager AI: Status §6══════════"), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Villager: §f%s §7(Level %d, %s)",
             capitalize(professionName),
             data.level(),
             villager.isBaby() ? "§dBaby" : "§aAdult"
         )), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s",
+            noRoam ? "§aNo-Roam Active (Custom AI)" : "§eVanilla Roaming Active")), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Time: §e%s §7(Tick %d/24000, Day %d)", clockTime, dayTime, dayCount)), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Scheduled Phase: §a%s", scheduledPhase)), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Brain Activity: §b%s", currentActivity.toUpperCase())), false);
@@ -141,7 +180,9 @@ public class VillagerScheduleCommand {
             source.sendSuccess(() -> Component.literal(String.format("§7• Walk Target: §f[%.1f, %.1f, %.1f] §7(%.1fm away, speed %.2f)",
                 targetPos.x, targetPos.y, targetPos.z, dist, walkTarget.get().getSpeedModifier())), false);
         } else {
-            source.sendSuccess(() -> Component.literal("§7• Walk Target: §aNone (Stationary - No Roam)"), false);
+            source.sendSuccess(() -> Component.literal(noRoam
+                ? "§7• Walk Target: §aNone (Stationary - No Roam)"
+                : "§7• Walk Target: §7None"), false);
         }
         source.sendSuccess(() -> Component.literal("§6═════════════════════════════════════════════"), false);
 
@@ -154,10 +195,13 @@ public class VillagerScheduleCommand {
         long dayCount = level.getOverworldClockTime() / 24000L;
         String clockTime = formatClockTime(dayTime);
         String currentPhase = getScheduledPhase(dayTime, false);
+        boolean noRoam = VillagerAIConfig.get().disableRoaming;
 
         source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Daily Schedule §6══════════"), false);
         source.sendSuccess(() -> Component.literal(String.format("§7Current Time: §e%s §7(Tick %d/24000, Day %d) §8[Active: §a%s§8]",
             clockTime, dayTime, dayCount, currentPhase)), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/villagerschedule toggle-roam to change)",
+            noRoam ? "§aNo-Roam Active (Config ON)" : "§eVanilla Roaming Active (Config OFF)")), false);
         source.sendSuccess(() -> Component.literal("§7• §e06:00 - 08:00 §7(10 - 2000t):   §fIDLE §8(Wake up & morning leisure)"), false);
         source.sendSuccess(() -> Component.literal("§7• §a08:00 - 15:00 §7(2000 - 9000t):  §fWORK §8(Working at workstation)"), false);
         source.sendSuccess(() -> Component.literal("§7• §d15:00 - 17:00 §7(9000 - 11000t): §fMEET §8(Gathering at village bell)"), false);
