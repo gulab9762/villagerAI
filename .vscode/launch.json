@@ -12,11 +12,11 @@
       "projectName": "neoforge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\build\\moddev\\clientRunProgramArgs.txt"
+        "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dheavenlynether%%C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\bin\\main"
+        "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dvillagerai%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},
@@ -34,11 +34,11 @@
       "projectName": "neoforge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\build\\moddev\\serverRunProgramArgs.txt"
+        "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dheavenlynether%%C:\\Users\\Gulab\\IdeaProjects\\block-place\\neoforge\\bin\\main"
+        "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dvillagerai%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},

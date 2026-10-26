@@ -1,7 +1,7 @@
-﻿{
+{
   "required": true,
   "minVersion": "0.8",
-  "package": "com.heavenlynether.mixin",
+  "package": "com.villagerai.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [],

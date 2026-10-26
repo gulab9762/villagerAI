@@ -1,4 +1,4 @@
-﻿{
+{
     "schemaVersion": 1,
     "id": "${mod_id}",
     "version": "${version}",
@@ -13,7 +13,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.heavenlynether.fabric.HeavenlyNetherFabric"
+            "com.villagerai.fabric.VillagerAIFabric"
         ]
     },
     "mixins": [

@@ -16,3 +16,5 @@ bin/
 gradle-local.properties
 
 scripts/
+.eclipse/
+*/.eclipse/
