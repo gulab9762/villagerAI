@@ -40,6 +40,12 @@ public class VillagerAIConfig {
      */
     public boolean disableBabyRoaming = true;
 
+    /**
+     * When true, prioritizes assigning workstations to the nearest eligible unassigned villager
+     * both when a workstation is placed and during village generation / chunk load.
+     */
+    public boolean assignNearestVillager = true;
+
     public static VillagerAIConfig get() {
         return instance;
     }

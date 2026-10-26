@@ -236,6 +236,8 @@ public class VillagerScheduleCommand {
             clockTime, dayTime, dayCount, currentPhase)), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/villagerschedule toggle-roam to change)",
             noRoam ? "§aNo-Roam Active (Config ON)" : "§eVanilla Roaming Active (Config OFF)")), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Nearest Job Assignment: %s",
+            VillagerAIConfig.get().assignNearestVillager ? "§aEnabled (Nearest villager claims on place & gen)" : "§eDisabled (Vanilla)")), false);
         source.sendSuccess(() -> Component.literal("§7• §e06:00 - 08:00 §7(10 - 2000t):   §fIDLE §8(Wake up & morning leisure)"), false);
         source.sendSuccess(() -> Component.literal("§7• §a08:00 - 15:00 §7(2000 - 9000t):  §fWORK §8(Working at workstation)"), false);
         source.sendSuccess(() -> Component.literal("§7• §d15:00 - 17:00 §7(9000 - 11000t): §fMEET §8(Gathering at village bell)"), false);

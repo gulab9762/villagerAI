@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import com.villagerai.ai.AcquireNearestJobSite;
 import com.villagerai.config.VillagerAIConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -32,6 +33,28 @@ public abstract class VillagerGoalPackagesMixin {
     @Invoker("getMinimalLookBehavior")
     public static Pair<Integer, BehaviorControl<LivingEntity>> invokeGetMinimalLookBehavior() {
         throw new AssertionError();
+    }
+
+    /**
+     * Override core package to replace vanilla AcquirePoi for JOB_SITE with AcquireNearestJobSite,
+     * ensuring the closest eligible unassigned villager always claims the workstation.
+     */
+    @Inject(method = "getCorePackage", at = @At("RETURN"), cancellable = true)
+    private static void onGetCorePackage(Holder<VillagerProfession> profession, float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+        if (!VillagerAIConfig.get().assignNearestVillager) {
+            return;
+        }
+        ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>> original = cir.getReturnValue();
+        ImmutableList.Builder<Pair<Integer, ? extends BehaviorControl<? super Villager>>> builder = ImmutableList.builder();
+
+        for (Pair<Integer, ? extends BehaviorControl<? super Villager>> pair : original) {
+            if (pair.getFirst() == 6) {
+                builder.add(Pair.of(6, new AcquireNearestJobSite(speedModifier)));
+            } else {
+                builder.add(pair);
+            }
+        }
+        cir.setReturnValue(builder.build());
     }
 
     /**
