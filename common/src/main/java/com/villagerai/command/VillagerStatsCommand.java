@@ -37,9 +37,6 @@ public class VillagerStatsCommand {
         // Register primary command /villagerstats and alias /villagerStats
         registerNodes(dispatcher, "villagerstats");
         registerNodes(dispatcher, "villagerStats");
-        // Backwards-compatible aliases
-        registerNodes(dispatcher, "villagerschedule");
-        registerNodes(dispatcher, "villagerSchedule");
     }
 
     private static void registerNodes(CommandDispatcher<CommandSourceStack> dispatcher, String literal) {
@@ -58,16 +55,6 @@ public class VillagerStatsCommand {
                     Commands.literal("toggle-roam")
                         .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .executes(VillagerStatsCommand::executeToggleRoam)
-                )
-                .then(
-                    Commands.literal("clear-targets")
-                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(VillagerStatsCommand::executeClearTargets)
-                )
-                .then(
-                    Commands.literal("reload")
-                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(VillagerStatsCommand::executeReload)
                 )
         );
     }
@@ -116,23 +103,6 @@ public class VillagerStatsCommand {
         } else {
             source.sendSuccess(() -> Component.literal(String.format("§e[Villager AI] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active). Refreshed %d villager(s).", count)), true);
         }
-        return 1;
-    }
-
-    private static int executeClearTargets(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
-        int count = refreshAllLoadedVillagers(source.getServer());
-        source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fCleared active targets and refreshed %d villager(s).", count)), true);
-        return 1;
-    }
-
-    private static int executeReload(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
-        VillagerAIConfig.load();
-        boolean noRoam = VillagerAIConfig.get().disableRoaming;
-        int count = refreshAllLoadedVillagers(source.getServer());
-        source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fConfig reloaded. Roaming override: %s§f. Refreshed %d villager(s).",
-            (noRoam ? "§aActive (No Roam)" : "§eInactive (Vanilla Roam)"), count)), true);
         return 1;
     }
 
