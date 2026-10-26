@@ -39,7 +39,7 @@ public class VillagerAssignmentHelper {
         // If already has an active claimed job site memory, not eligible
         if (villager.getBrain().getMemory(MemoryModuleType.JOB_SITE).isPresent()) {
             return false;
-        }
+        }         
         // If traded (experience > 0 or level > 1), profession is locked
         if (villager.getVillagerXp() > 0 || villager.getVillagerData().level() > 1) {
             // Can only re-claim if its locked profession matches this POI
@@ -138,7 +138,7 @@ public class VillagerAssignmentHelper {
                 villager.refreshBrain(level);
                 if (prof.value().workSound() != null) {
                     level.playSound(null, villager.getX(), villager.getY(), villager.getZ(), prof.value().workSound(), SoundSource.NEUTRAL, 1.0F, 1.0F);
-                }
+                }               
             });
 
             level.broadcastEntityEvent(villager, (byte) 14); // Happy green sparkles

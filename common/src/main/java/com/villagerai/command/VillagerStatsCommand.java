@@ -31,10 +31,13 @@ import java.util.Optional;
 
 import com.villagerai.config.VillagerAIConfig;
 
-public class VillagerScheduleCommand {
+public class VillagerStatsCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // Register /villagerschedule and alias /villagerSchedule
+        // Register primary command /villagerstats and alias /villagerStats
+        registerNodes(dispatcher, "villagerstats");
+        registerNodes(dispatcher, "villagerStats");
+        // Backwards-compatible aliases
         registerNodes(dispatcher, "villagerschedule");
         registerNodes(dispatcher, "villagerSchedule");
     }
@@ -42,29 +45,29 @@ public class VillagerScheduleCommand {
     private static void registerNodes(CommandDispatcher<CommandSourceStack> dispatcher, String literal) {
         dispatcher.register(
             Commands.literal(literal)
-                .executes(VillagerScheduleCommand::executeSmart)
+                .executes(VillagerStatsCommand::executeSmart)
                 .then(
                     Commands.literal("status")
-                        .executes(VillagerScheduleCommand::executeStatus)
+                        .executes(VillagerStatsCommand::executeStatus)
                 )
                 .then(
                     Commands.literal("calendar")
-                        .executes(VillagerScheduleCommand::executeCalendar)
+                        .executes(VillagerStatsCommand::executeCalendar)
                 )
                 .then(
                     Commands.literal("toggle-roam")
                         .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(VillagerScheduleCommand::executeToggleRoam)
+                        .executes(VillagerStatsCommand::executeToggleRoam)
                 )
                 .then(
                     Commands.literal("clear-targets")
                         .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(VillagerScheduleCommand::executeClearTargets)
+                        .executes(VillagerStatsCommand::executeClearTargets)
                 )
                 .then(
                     Commands.literal("reload")
                         .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(VillagerScheduleCommand::executeReload)
+                        .executes(VillagerStatsCommand::executeReload)
                 )
         );
     }
@@ -174,17 +177,17 @@ public class VillagerScheduleCommand {
         long dayTime = level.getOverworldClockTime() % 24000L;
         long dayCount = level.getOverworldClockTime() / 24000L;
         String clockTime = formatClockTime(dayTime);
-        String scheduledPhase = getScheduledPhase(dayTime, villager.isBaby());
 
         VillagerData data = villager.getVillagerData();
-        Holder<VillagerProfession> profHolder = data.profession();
-        String professionName = profHolder.unwrapKey()
-            .map(k -> k.identifier().getPath())
-            .orElse("none");
+        Holder<VillagerProfession> professionHolder = data.profession();
+        String profName = capitalize(professionHolder.getRegisteredName());
+        int levelNum = data.level();
+        int xp = villager.getVillagerXp();
 
         Brain<Villager> brain = villager.getBrain();
         Optional<Activity> activeActivity = brain.getActiveNonCoreActivity();
         String currentActivity = activeActivity.map(Activity::getName).orElse("none");
+        String scheduledPhase = getScheduledPhase(dayTime, villager.isBaby());
 
         Optional<GlobalPos> jobSite = brain.getMemory(MemoryModuleType.JOB_SITE);
         Optional<GlobalPos> home = brain.getMemory(MemoryModuleType.HOME);
@@ -193,10 +196,11 @@ public class VillagerScheduleCommand {
 
         boolean noRoam = VillagerAIConfig.get().disableRoaming;
 
-        source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager AI: Status §6══════════"), false);
-        source.sendSuccess(() -> Component.literal(String.format("§7• Villager: §f%s §7(Level %d, %s)",
-            capitalize(professionName),
-            data.level(),
+        source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Status §6══════════"), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Profession: §f%s §7(Level %d, %d XP) §8[%s§8]",
+            profName,
+            levelNum,
+            xp,
             villager.isBaby() ? "§dBaby" : "§aAdult"
         )), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s",
@@ -234,7 +238,7 @@ public class VillagerScheduleCommand {
         source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Daily Schedule §6══════════"), false);
         source.sendSuccess(() -> Component.literal(String.format("§7Current Time: §e%s §7(Tick %d/24000, Day %d) §8[Active: §a%s§8]",
             clockTime, dayTime, dayCount, currentPhase)), false);
-        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/villagerschedule toggle-roam to change)",
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/villagerstats toggle-roam to change)",
             noRoam ? "§aNo-Roam Active (Config ON)" : "§eVanilla Roaming Active (Config OFF)")), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Nearest Job Assignment: %s",
             VillagerAIConfig.get().assignNearestVillager ? "§aEnabled (Nearest villager claims on place & gen)" : "§eDisabled (Vanilla)")), false);

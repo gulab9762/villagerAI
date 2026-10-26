@@ -2,7 +2,7 @@ package com.villagerai.neoforge;
 
 import com.villagerai.Constants;
 import com.villagerai.VillagerAICommon;
-import com.villagerai.command.VillagerScheduleCommand;
+import com.villagerai.command.VillagerStatsCommand;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,7 +20,7 @@ public class VillagerAINeoForge {
     public static class ServerEvents {
         @SubscribeEvent
         public static void onRegisterCommands(RegisterCommandsEvent event) {
-            VillagerScheduleCommand.register(event.getDispatcher());
+            VillagerStatsCommand.register(event.getDispatcher());
         }
     }
 }
