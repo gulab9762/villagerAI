@@ -51,17 +51,13 @@ public class VillagerStatsClient {
     }
 
     public static Villager findTargetVillager(Player player) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.crosshairPickEntity instanceof Villager v) {
+            return v;
+        }
         HitResult hit = ProjectileUtil.getHitResultOnViewVector(player, e -> e instanceof Villager, 12.0);
         if (hit instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof Villager v) {
             return v;
-        }
-        List<Villager> nearby = player.level().getEntitiesOfClass(
-            Villager.class,
-            player.getBoundingBox().inflate(16.0)
-        );
-        if (!nearby.isEmpty()) {
-            nearby.sort(Comparator.comparingDouble(player::distanceToSqr));
-            return nearby.get(0);
         }
         return null;
     }

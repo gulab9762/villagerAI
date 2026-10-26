@@ -37,15 +37,22 @@ public class VillagerStatsScreen extends Screen {
             lines.add(Component.literal("---"));
             lines.add(Component.literal("§8[Press V or ESC to Close]"));
         } else {
-            lines.add(Component.literal("§6§l✦ Village Daily Schedule ✦"));
+            lines.add(Component.literal("§6§l✦ Village Daily Schedule & Calendar ✦"));
             lines.add(Component.literal(String.format("§7Time: §e%s §7(Tick %d, Day %d) §8[Active: §a%s§8]",
                 data.clockTime, data.dayTime, data.dayCount, data.scheduledPhase)));
             lines.add(Component.literal("---"));
-            lines.add(Component.literal("§7• §e06:00 - 08:00 §8(10 - 2000t):   §fIDLE §8(Wake up & leisure)"));
-            lines.add(Component.literal("§7• §a08:00 - 15:00 §8(2000 - 9000t):  §fWORK §8(Working at workstation)"));
-            lines.add(Component.literal("§7• §d15:00 - 17:00 §8(9000 - 11000t): §fMEET §8(Gathering at bell)"));
-            lines.add(Component.literal("§7• §e17:00 - 18:00 §8(11000 - 12000t): §fIDLE §8(Evening leisure)"));
-            lines.add(Component.literal("§7• §918:00 - 06:00 §8(12000 - 24000t): §fREST §8(Sleeping in bed)"));
+
+            boolean isIdleMorning = data.dayTime < 2000L;
+            boolean isWork = data.dayTime >= 2000L && data.dayTime < 9000L;
+            boolean isMeet = data.dayTime >= 9000L && data.dayTime < 11000L;
+            boolean isIdleEvening = data.dayTime >= 11000L && data.dayTime < 12000L;
+            boolean isRest = data.dayTime >= 12000L;
+
+            lines.add(Component.literal((isIdleMorning ? "§a§l▶ " : "§7• ") + "§e06:00 - 08:00 §8(10 - 2000t):   §fIDLE §8(Wake up & leisure)" + (isIdleMorning ? " §a◀ §8[NOW]" : "")));
+            lines.add(Component.literal((isWork ? "§a§l▶ " : "§7• ") + "§a08:00 - 15:00 §8(2000 - 9000t):  §fWORK §8(Working at workstation)" + (isWork ? " §a◀ §8[NOW]" : "")));
+            lines.add(Component.literal((isMeet ? "§a§l▶ " : "§7• ") + "§d15:00 - 17:00 §8(9000 - 11000t): §fMEET §8(Gathering at bell)" + (isMeet ? " §a◀ §8[NOW]" : "")));
+            lines.add(Component.literal((isIdleEvening ? "§a§l▶ " : "§7• ") + "§e17:00 - 18:00 §8(11000 - 12000t): §fIDLE §8(Evening leisure)" + (isIdleEvening ? " §a◀ §8[NOW]" : "")));
+            lines.add(Component.literal((isRest ? "§a§l▶ " : "§7• ") + "§918:00 - 06:00 §8(12000 - 24000t): §fREST §8(Sleeping in bed)" + (isRest ? " §a◀ §8[NOW]" : "")));
             lines.add(Component.literal("---"));
             lines.add(Component.literal("§7• Roaming: " + (data.noRoam ? "§aDisabled" : "§eEnabled") +
                 " §7| Nearest Job: " + (data.assignNearest ? "§aEnabled" : "§eDisabled")));
