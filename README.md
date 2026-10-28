@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Minecraft-26.3-brightgreen.svg" alt="Minecraft 26.3" />
-  <img src="https://img.shields.io/badge/Modloader-Fabric%20%7C%20NeoForge-blue.svg" alt="Fabric | NeoForge" />
+  <img src="https://img.shields.io/badge/Modloader-Fabric%20%7C%20NeoForge%20%7C%20Forge-blue.svg" alt="Fabric | NeoForge" />
   <img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="MIT License" />
   <img src="https://img.shields.io/badge/Environment-Client%20%26%20Server-purple.svg" alt="Client and Server" />
 </p>
@@ -99,4 +99,5 @@ Configuration is located at `config/villagerai.json`:
 - **Supported Mod Loaders**:
   - **Fabric** (Requires [Fabric Loader](https://fabricmc.net/) and [Fabric API](https://modrinth.com/mod/fabric-api))
   - **NeoForge**
+  - **Minecraft Forge**
 - **Java**: 25+

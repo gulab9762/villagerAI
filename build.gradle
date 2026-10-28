@@ -1,12 +1,13 @@
 plugins {
     id 'net.fabricmc.fabric-loom' version '1.18.1' apply false
     id 'net.neoforged.moddev' version '2.0.147' apply false
+    id 'net.minecraftforge.gradle' version '7.0.40' apply false
 }
 
 tasks.register('buildAllMods') {
     group = 'build'
     description = 'Builds all supported mod loader JARs.'
-    dependsOn ':fabric:build', ':neoforge:build'
+    dependsOn ':fabric:build', ':neoforge:build', ':forge:build'
 }
 
 // Fabric Tasks
@@ -45,6 +46,32 @@ tasks.register('runNeoForgeClient') {
     group = 'neoforge'
     description = 'Runs the NeoForge development client.'
     dependsOn ':neoforge:runClient'
+}
+
+
+// Forge Tasks
+tasks.register('buildForge') {
+    group = 'forge'
+    description = 'Builds the Forge mod JAR.'
+    dependsOn ':forge:build'
+}
+
+tasks.register('runForgeClient') {
+    group = 'forge'
+    description = 'Runs the Forge development client.'
+    dependsOn ':forge:runClient'
+}
+
+tasks.register('runForgeServer') {
+    group = 'forge'
+    description = 'Runs the Forge development server.'
+    dependsOn ':forge:runServer'
+}
+
+tasks.register('cleanForge') {
+    group = 'forge'
+    description = 'Cleans Forge build outputs.'
+    dependsOn ':forge:clean'
 }
 
 // Notification Task
