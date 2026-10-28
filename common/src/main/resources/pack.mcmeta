@@ -1,0 +1,8 @@
+{
+  "pack": {
+    "description": "Villager AI",
+    "pack_format": 61,
+    "min_format": 48,
+    "max_format": 121
+  }
+}
