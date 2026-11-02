@@ -79,11 +79,11 @@ public class VillagerStatsCommand {
             if (target != null) {
                 return showVillagerStatus(source, target);
             } else {
-                source.sendFailure(Component.translatable("evv.command.no_target"));
+                source.sendFailure(Component.literal("§cNo villager found in crosshairs or within 16 blocks."));
                 return showCalendar(source);
             }
         } else {
-            source.sendFailure(Component.translatable("evv.command.player_only"));
+            source.sendFailure(Component.literal("§cOnly in-game players can target a villager."));
             return showCalendar(source);
         }
     }
@@ -101,9 +101,9 @@ public class VillagerStatsCommand {
         int count = refreshAllLoadedVillagers(source.getServer());
 
         if (config.disableRoaming) {
-            source.sendSuccess(() -> Component.translatable("evv.command.toggle.disabled", count), true);
+            source.sendSuccess(() -> Component.literal(String.format("§a[Easy Vanilla Villagers] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put). Refreshed %d villager(s).", count)), true);
         } else {
-            source.sendSuccess(() -> Component.translatable("evv.command.toggle.enabled", count), true);
+            source.sendSuccess(() -> Component.literal(String.format("§e[Easy Vanilla Villagers] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active). Refreshed %d villager(s).", count)), true);
         }
         return 1;
     }
@@ -150,19 +150,14 @@ public class VillagerStatsCommand {
 
         VillagerData data = villager.getVillagerData();
         Holder<VillagerProfession> professionHolder = data.profession();
-        String regName = professionHolder.getRegisteredName();
-        String profId = regName != null && regName.contains(":") ? regName.substring(regName.indexOf(':') + 1) : (regName != null ? regName : "none");
-        String profName = VillagerStatsData.capitalize(profId);
-        Component profComponent = Component.translatableWithFallback("entity.minecraft.villager." + profId, profName);
-
+        String profName = VillagerStatsData.capitalize(professionHolder.getRegisteredName());
         int levelNum = data.level();
         int xp = villager.getVillagerXp();
 
         Brain<Villager> brain = villager.getBrain();
         Optional<Activity> activeActivity = brain.getActiveNonCoreActivity();
-        String actName = activeActivity.map(Activity::getName).orElse("idle").toLowerCase();
-        Component activityComponent = Component.translatableWithFallback("evv.activity." + actName, actName.toUpperCase());
-        Component scheduledPhaseComponent = VillagerStatsData.getScheduledPhaseComponent(dayTime, villager.isBaby());
+        String currentActivity = activeActivity.map(Activity::getName).orElse("none");
+        String scheduledPhase = VillagerStatsData.getScheduledPhase(dayTime, villager.isBaby());
 
         Optional<GlobalPos> jobSite = brain.getMemory(MemoryModuleType.JOB_SITE);
         Optional<GlobalPos> home = brain.getMemory(MemoryModuleType.HOME);
@@ -171,33 +166,33 @@ public class VillagerStatsCommand {
 
         boolean noRoam = VillagerAIConfig.get().disableRoaming;
 
-        source.sendSuccess(() -> Component.translatable("evv.command.status.header"), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.profession",
-            profComponent,
+        source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Status §6══════════"), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Profession: §f%s §7(Level %d, %d XP) §8[%s§8]",
+            profName,
             levelNum,
             xp,
-            villager.isBaby() ? Component.translatable("evv.gui.baby") : Component.translatable("evv.gui.adult")
-        ), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.ai_mode",
-            noRoam ? Component.translatable("evv.gui.mode.no_roam") : Component.translatable("evv.gui.mode.vanilla")), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.time", clockTime, dayTime, dayCount), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.scheduled_phase", scheduledPhaseComponent), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.brain_activity", activityComponent), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.workstation", formatPos(jobSite)), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.bed", formatPos(home)), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.status.bell", formatPos(meeting)), false);
+            villager.isBaby() ? "§dBaby" : "§aAdult"
+        )), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s",
+            noRoam ? "§aNo-Roam Active (Custom AI)" : "§eVanilla Roaming Active")), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Time: §e%s §7(Tick %d/24000, Day %d)", clockTime, dayTime, dayCount)), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Scheduled Phase: §a%s", scheduledPhase)), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Brain Activity: §b%s", currentActivity.toUpperCase())), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Workstation: %s", formatPos(jobSite))), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Bed: %s", formatPos(home))), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Meeting Bell: %s", formatPos(meeting))), false);
 
         if (walkTarget.isPresent()) {
             Vec3 targetPos = walkTarget.get().getTarget().currentPosition();
             double dist = villager.position().distanceTo(targetPos);
-            source.sendSuccess(() -> Component.translatable("evv.command.walk_target.coords",
-                targetPos.x, targetPos.y, targetPos.z, dist, walkTarget.get().getSpeedModifier()), false);
+            source.sendSuccess(() -> Component.literal(String.format("§7• Walk Target: §f[%.1f, %.1f, %.1f] §7(%.1fm away, speed %.2f)",
+                targetPos.x, targetPos.y, targetPos.z, dist, walkTarget.get().getSpeedModifier())), false);
         } else {
-            source.sendSuccess(() -> Component.translatable(noRoam
-                ? "evv.command.walk_target.stationary"
-                : "evv.command.walk_target.none"), false);
+            source.sendSuccess(() -> Component.literal(noRoam
+                ? "§7• Walk Target: §aNone (Stationary - No Roam)"
+                : "§7• Walk Target: §7None"), false);
         }
-        source.sendSuccess(() -> Component.translatable("evv.command.status.footer"), false);
+        source.sendSuccess(() -> Component.literal("§6═════════════════════════════════════════════"), false);
 
         return 1;
     }
@@ -207,34 +202,31 @@ public class VillagerStatsCommand {
         long dayTime = level.getOverworldClockTime() % 24000L;
         long dayCount = level.getOverworldClockTime() / 24000L;
         String clockTime = VillagerStatsData.formatClockTime(dayTime);
-        Component currentPhaseComponent = VillagerStatsData.getScheduledPhaseComponent(dayTime, false);
+        String currentPhase = VillagerStatsData.getScheduledPhase(dayTime, false);
         boolean noRoam = VillagerAIConfig.get().disableRoaming;
 
-        source.sendSuccess(() -> Component.translatable("evv.command.calendar.header"), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.calendar.time",
-            clockTime, dayTime, dayCount, currentPhaseComponent), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.calendar.ai_mode",
-            noRoam ? Component.translatable("evv.gui.mode.no_roam") : Component.translatable("evv.gui.mode.vanilla"),
-            Component.translatable("evv.command.calendar.toggle_hint")), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.calendar.nearest_job",
-            VillagerAIConfig.get().assignNearestVillager
-                ? Component.translatable("evv.command.nearest_job.enabled")
-                : Component.translatable("evv.command.nearest_job.disabled")), false);
-        source.sendSuccess(() -> Component.literal("§7• ").append(Component.translatable("evv.gui.schedule.idle_morning")), false);
-        source.sendSuccess(() -> Component.literal("§7• ").append(Component.translatable("evv.gui.schedule.work")), false);
-        source.sendSuccess(() -> Component.literal("§7• ").append(Component.translatable("evv.gui.schedule.meet")), false);
-        source.sendSuccess(() -> Component.literal("§7• ").append(Component.translatable("evv.gui.schedule.idle_evening")), false);
-        source.sendSuccess(() -> Component.literal("§7• ").append(Component.translatable("evv.gui.schedule.rest")), false);
-        source.sendSuccess(() -> Component.translatable("evv.command.calendar.footer"), false);
+        source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Daily Schedule §6══════════"), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7Current Time: §e%s §7(Tick %d/24000, Day %d) §8[Active: §a%s§8]",
+            clockTime, dayTime, dayCount, currentPhase)), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/evv toggle-roam to change)",
+            noRoam ? "§aNo-Roam Active (Config ON)" : "§eVanilla Roaming Active (Config OFF)")), false);
+        source.sendSuccess(() -> Component.literal(String.format("§7• Nearest Job Assignment: %s",
+            VillagerAIConfig.get().assignNearestVillager ? "§aEnabled (Nearest villager claims on place & gen)" : "§eDisabled (Vanilla)")), false);
+        source.sendSuccess(() -> Component.literal("§7• §e06:00 - 08:00 §7(10 - 2000t):   §fIDLE §8(Wake up & morning leisure)"), false);
+        source.sendSuccess(() -> Component.literal("§7• §a08:00 - 15:00 §7(2000 - 9000t):  §fWORK §8(Working at workstation)"), false);
+        source.sendSuccess(() -> Component.literal("§7• §d15:00 - 17:00 §7(9000 - 11000t): §fMEET §8(Gathering at village bell)"), false);
+        source.sendSuccess(() -> Component.literal("§7• §e17:00 - 18:00 §7(11000 - 12000t): §fIDLE §8(Evening leisure)"), false);
+        source.sendSuccess(() -> Component.literal("§7• §918:00 - 06:00 §7(12000 - 24000t): §fREST §8(Sleeping in bed)"), false);
+        source.sendSuccess(() -> Component.literal("§6═══════════════════════════════════════════════════"), false);
 
         return 1;
     }
 
-    private static Component formatPos(Optional<GlobalPos> globalPos) {
-        if (globalPos == null || globalPos.isEmpty()) {
-            return Component.literal("§c").append(Component.translatable("evv.common.none"));
+    private static String formatPos(Optional<GlobalPos> globalPos) {
+        if (globalPos.isEmpty()) {
+            return "§cNone";
         }
         BlockPos pos = globalPos.get().pos();
-        return Component.literal(String.format("§f[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
+        return String.format("§f[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ());
     }
 }
