@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -73,21 +73,21 @@ public abstract class VillagerGoalPackagesMixin {
                     2,
                     new RunOne<>(
                         ImmutableList.of(
-                            Pair.of(InteractWith.of(EntityTypes.VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
+                            Pair.of(InteractWith.of(EntityType.VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
                             Pair.of(
                                 InteractWith.of(
-                                    EntityTypes.VILLAGER, 8, AgeableMob::canBreed, AgeableMob::canBreed, MemoryModuleType.BREED_TARGET, speedModifier, 2
+                                    EntityType.VILLAGER, 8, AgeableMob::canBreed, AgeableMob::canBreed, MemoryModuleType.BREED_TARGET, speedModifier, 2
                                 ),
                                 1
                             ),
-                            Pair.of(InteractWith.of(EntityTypes.CAT, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 1),
+                            Pair.of(InteractWith.of(EntityType.CAT, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 1),
                             // Roaming behaviors removed: VillageBoundRandomStroll & SetWalkTargetFromLookTarget
                             Pair.of(new DoNothing(30, 60), 2)
                         )
                     )
                 ),
                 Pair.of(3, new GiveGiftToHero(100)),
-                Pair.of(3, SetLookAndInteract.create(EntityTypes.PLAYER, 4)),
+                Pair.of(3, SetLookAndInteract.create(EntityType.PLAYER, 4)),
                 Pair.of(3, new ShowTradesToPlayer(400, 1600)),
                 Pair.of(
                     3,
@@ -148,7 +148,7 @@ public abstract class VillagerGoalPackagesMixin {
                     )
                 ),
                 Pair.of(10, new ShowTradesToPlayer(400, 1600)),
-                Pair.of(10, SetLookAndInteract.create(EntityTypes.PLAYER, 4)),
+                Pair.of(10, SetLookAndInteract.create(EntityType.PLAYER, 4)),
                 Pair.of(2, SetWalkTargetFromBlockMemory.create(MemoryModuleType.JOB_SITE, speedModifier, 9, 100, 1200)),
                 Pair.of(3, new GiveGiftToHero(100)),
                 Pair.of(99, UpdateActivityFromSchedule.create())
@@ -169,7 +169,7 @@ public abstract class VillagerGoalPackagesMixin {
             ImmutableList.of(
                 Pair.of(2, SocializeAtBell.create()),
                 Pair.of(10, new ShowTradesToPlayer(400, 1600)),
-                Pair.of(10, SetLookAndInteract.create(EntityTypes.PLAYER, 4)),
+                Pair.of(10, SetLookAndInteract.create(EntityType.PLAYER, 4)),
                 Pair.of(2, SetWalkTargetFromBlockMemory.create(MemoryModuleType.MEETING_POINT, speedModifier, 6, 100, 200)),
                 Pair.of(3, new GiveGiftToHero(100)),
                 Pair.of(3, ValidateNearbyPoi.create(p -> p.is(PoiTypes.MEETING), MemoryModuleType.MEETING_POINT)),
@@ -239,8 +239,8 @@ public abstract class VillagerGoalPackagesMixin {
                     new RunOne<>(
                         ImmutableMap.of(MemoryModuleType.VISIBLE_VILLAGER_BABIES, MemoryStatus.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(InteractWith.of(EntityTypes.VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
-                            Pair.of(InteractWith.of(EntityTypes.CAT, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 1),
+                            Pair.of(InteractWith.of(EntityType.VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
+                            Pair.of(InteractWith.of(EntityType.CAT, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 1),
                             // VillageBoundRandomStroll and SetWalkTargetFromLookTarget removed
                             Pair.of(new JumpOnBed(speedModifier), 2),
                             Pair.of(new DoNothing(20, 40), 2)

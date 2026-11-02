@@ -23,8 +23,8 @@ public class VillagerStatsClient {
         if (mc.player == null || mc.level == null) return;
 
         // Toggle behavior: pressing V when already open closes it
-        if (mc.gui.screen() instanceof VillagerStatsScreen) {
-            mc.gui.screen().onClose();
+        if (mc.screen instanceof VillagerStatsScreen) {
+            mc.screen.onClose();
             return;
         }
 
@@ -44,7 +44,7 @@ public class VillagerStatsClient {
             data = VillagerStatsData.fromSchedule(mc.level);
         }
 
-        mc.gui.setScreen(new VillagerStatsScreen(data));
+        mc.setScreen(new VillagerStatsScreen(data));
     }
 
     public static Villager findTargetVillager(Player player) {

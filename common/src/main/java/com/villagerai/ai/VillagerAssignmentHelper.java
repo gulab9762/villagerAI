@@ -6,7 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
@@ -61,7 +61,7 @@ public class VillagerAssignmentHelper {
         double maxDistSq = maxRadius * maxRadius;
 
         List<Villager> villagers = new java.util.ArrayList<>(level.getEntities(
-            EntityTypes.VILLAGER,
+            EntityType.VILLAGER,
             v -> v.isAlive() && !v.isBaby() && v.distanceToSqr(center) <= maxDistSq && canTakeJob(v, poiType)
         ));
 
@@ -104,7 +104,7 @@ public class VillagerAssignmentHelper {
         PoiManager poiManager = level.getPoiManager();
 
         // Clear any competitor who previously had this pos as potential or uncompleted job site
-        List<? extends Villager> competitors = level.getEntities(EntityTypes.VILLAGER, v -> v != villager && v.isAlive());
+        List<? extends Villager> competitors = level.getEntities(EntityType.VILLAGER, v -> v != villager && v.isAlive());
         for (Villager other : competitors) {
             Optional<GlobalPos> pot = other.getBrain().getMemory(MemoryModuleType.POTENTIAL_JOB_SITE);
             if (pot.isPresent() && pot.get().pos().equals(pos)) {

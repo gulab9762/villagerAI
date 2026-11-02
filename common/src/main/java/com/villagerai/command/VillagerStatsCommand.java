@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -111,7 +111,7 @@ public class VillagerStatsCommand {
     public static int refreshAllLoadedVillagers(MinecraftServer server) {
         int count = 0;
         for (ServerLevel level : server.getAllLevels()) {
-            List<? extends Villager> villagers = level.getEntities(EntityTypes.VILLAGER, LivingEntity::isAlive);
+            List<? extends Villager> villagers = level.getEntities(EntityType.VILLAGER, LivingEntity::isAlive);
             for (Villager villager : villagers) {
                 villager.getNavigation().stop();
                 villager.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
