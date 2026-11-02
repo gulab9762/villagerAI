@@ -15,10 +15,10 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "init": [
+      "main": [
         "com.villagerai.fabric.VillagerAIFabric"
       ],
-      "client_init": [
+      "client": [
         "com.villagerai.fabric.client.VillagerAIFabricClient"
       ]
     },
@@ -37,4 +37,3 @@
     "${mod_id}.mixins.json"
   ]
 }
-
