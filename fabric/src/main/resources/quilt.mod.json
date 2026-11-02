@@ -29,7 +29,7 @@
       },
       {
         "id": "minecraft",
-        "versions": "${minecraft_version_range}"
+        "versions": ">=${minecraft_version}"
       }
     ]
   },
