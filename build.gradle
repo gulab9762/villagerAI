@@ -38,7 +38,9 @@ tasks.register('universalJar', Jar) {
             'Implementation-Title'  : "${mod_name} Multi-Loader",
             'Implementation-Version': project.version,
             'Implementation-Vendor' : mod_author,
-            'Built-On-Minecraft'    : minecraft_version
+            'Built-On-Minecraft'    : minecraft_version,
+            'Fabric-Loom-Remap'     : 'false',
+            'MixinConfigs'          : "${project.findProperty('mod_id') ?: 'evv'}.mixins.json"
         ])
     }
 }
