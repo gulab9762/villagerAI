@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 public class VillagerAIConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static Path configPath = Path.of("config", "villagerai.json");
+    private static Path configPath = Path.of("config", "evv.json");
     private static VillagerAIConfig instance = new VillagerAIConfig();
 
     /**
@@ -57,19 +57,25 @@ public class VillagerAIConfig {
 
     public static void load() {
         try {
+            if (!Files.exists(configPath)) {
+                Path legacy = Path.of("config", "villagerai.json");
+                if (Files.exists(legacy)) {
+                    configPath = legacy;
+                }
+            }
             if (Files.exists(configPath)) {
                 try (Reader reader = Files.newBufferedReader(configPath)) {
                     VillagerAIConfig loaded = GSON.fromJson(reader, VillagerAIConfig.class);
                     if (loaded != null) {
                         instance = loaded;
-                        Constants.LOG.info("Loaded Villager AI config from {}", configPath);
+                        Constants.LOG.info("Loaded {} config from {}", Constants.MOD_NAME, configPath);
                         return;
                     }
                 }
             }
             save(); // Create default config if missing
         } catch (Exception e) {
-            Constants.LOG.error("Failed to load Villager AI config from {}, using defaults", configPath, e);
+            Constants.LOG.error("Failed to load {} config from {}, using defaults", Constants.MOD_NAME, configPath, e);
         }
     }
 
@@ -81,9 +87,9 @@ public class VillagerAIConfig {
             try (Writer writer = Files.newBufferedWriter(configPath)) {
                 GSON.toJson(instance, writer);
             }
-            Constants.LOG.info("Saved Villager AI config to {}", configPath);
+            Constants.LOG.info("Saved {} config to {}", Constants.MOD_NAME, configPath);
         } catch (Exception e) {
-            Constants.LOG.error("Failed to save Villager AI config to {}", configPath, e);
+            Constants.LOG.error("Failed to save {} config to {}", Constants.MOD_NAME, configPath, e);
         }
     }
 }

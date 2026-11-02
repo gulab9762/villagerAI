@@ -16,7 +16,7 @@
       ],
       "vmArgs": [
         "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dvillagerai%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
+        "-Dfml.modFolders\u003devv%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},
@@ -38,7 +38,7 @@
       ],
       "vmArgs": [
         "@C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dvillagerai%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
+        "-Dfml.modFolders\u003devv%%C:\\Users\\Gulab\\IdeaProjects\\villagerAI\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},

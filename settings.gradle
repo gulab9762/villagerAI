@@ -16,6 +16,17 @@ pluginManagement {
         exclusiveContent {
             forRepository {
                 maven {
+                    name = 'Quilt'
+                    url = uri('https://maven.quiltmc.org/repository/release')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('org.quiltmc')
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
                     name = 'NeoForged'
                     url = uri('https://maven.neoforged.net/releases')
                 }
@@ -48,3 +59,4 @@ include('common')
 include('fabric')
 include('neoforge')
 include('forge')
+include('quilt')

@@ -1,5 +1,8 @@
 {
-  "mod.villagerai.name": "Villager AI",
+  "mod.evv.name": "Easy Vanilla Villagers",
+  "key.evv.stats": "Show Villager Stats",
+  "key.categories.evv": "Easy Vanilla Villagers",
+  "mod.villagerai.name": "Easy Vanilla Villagers",
   "key.villagerai.stats": "Show Villager Stats",
-  "key.categories.villagerai": "Villager AI"
+  "key.categories.villagerai": "Easy Vanilla Villagers"
 }

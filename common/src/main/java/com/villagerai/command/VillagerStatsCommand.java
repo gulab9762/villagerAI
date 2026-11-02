@@ -29,14 +29,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import com.villagerai.client.VillagerStatsData;
 import com.villagerai.config.VillagerAIConfig;
 
 public class VillagerStatsCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // Register primary command /villagerstats and alias /villagerStats
         registerNodes(dispatcher, "villagerstats");
         registerNodes(dispatcher, "villagerStats");
+        registerNodes(dispatcher, "evv");
+        registerNodes(dispatcher, "easyvanillavillagers");
     }
 
     private static void registerNodes(CommandDispatcher<CommandSourceStack> dispatcher, String literal) {
@@ -99,9 +101,9 @@ public class VillagerStatsCommand {
         int count = refreshAllLoadedVillagers(source.getServer());
 
         if (config.disableRoaming) {
-            source.sendSuccess(() -> Component.literal(String.format("§a[Villager AI] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put). Refreshed %d villager(s).", count)), true);
+            source.sendSuccess(() -> Component.literal(String.format("§a[Easy Vanilla Villagers] §fCustom AI: Villager roaming is now §cDISABLED §f(villagers stay put). Refreshed %d villager(s).", count)), true);
         } else {
-            source.sendSuccess(() -> Component.literal(String.format("§e[Villager AI] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active). Refreshed %d villager(s).", count)), true);
+            source.sendSuccess(() -> Component.literal(String.format("§e[Easy Vanilla Villagers] §fVanilla AI: Villager roaming is now §aENABLED §f(vanilla wandering active). Refreshed %d villager(s).", count)), true);
         }
         return 1;
     }
@@ -123,13 +125,11 @@ public class VillagerStatsCommand {
     }
 
     private static Villager findTargetVillager(ServerPlayer player) {
-        // 1. Raycast line of sight up to 12 blocks
         HitResult hit = ProjectileUtil.getHitResultOnViewVector(player, e -> e instanceof Villager, 12.0);
         if (hit instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof Villager villager) {
             return villager;
         }
 
-        // 2. Nearest villager within 16 blocks radius
         List<Villager> nearby = player.level().getEntitiesOfClass(
             Villager.class,
             player.getBoundingBox().inflate(16.0)
@@ -146,18 +146,18 @@ public class VillagerStatsCommand {
         ServerLevel level = villager.level() instanceof ServerLevel sl ? sl : source.getLevel();
         long dayTime = level.getOverworldClockTime() % 24000L;
         long dayCount = level.getOverworldClockTime() / 24000L;
-        String clockTime = formatClockTime(dayTime);
+        String clockTime = VillagerStatsData.formatClockTime(dayTime);
 
         VillagerData data = villager.getVillagerData();
         Holder<VillagerProfession> professionHolder = data.profession();
-        String profName = capitalize(professionHolder.getRegisteredName());
+        String profName = VillagerStatsData.capitalize(professionHolder.getRegisteredName());
         int levelNum = data.level();
         int xp = villager.getVillagerXp();
 
         Brain<Villager> brain = villager.getBrain();
         Optional<Activity> activeActivity = brain.getActiveNonCoreActivity();
         String currentActivity = activeActivity.map(Activity::getName).orElse("none");
-        String scheduledPhase = getScheduledPhase(dayTime, villager.isBaby());
+        String scheduledPhase = VillagerStatsData.getScheduledPhase(dayTime, villager.isBaby());
 
         Optional<GlobalPos> jobSite = brain.getMemory(MemoryModuleType.JOB_SITE);
         Optional<GlobalPos> home = brain.getMemory(MemoryModuleType.HOME);
@@ -201,14 +201,14 @@ public class VillagerStatsCommand {
         ServerLevel level = source.getLevel();
         long dayTime = level.getOverworldClockTime() % 24000L;
         long dayCount = level.getOverworldClockTime() / 24000L;
-        String clockTime = formatClockTime(dayTime);
-        String currentPhase = getScheduledPhase(dayTime, false);
+        String clockTime = VillagerStatsData.formatClockTime(dayTime);
+        String currentPhase = VillagerStatsData.getScheduledPhase(dayTime, false);
         boolean noRoam = VillagerAIConfig.get().disableRoaming;
 
         source.sendSuccess(() -> Component.literal("§6══════════ §e§lVillager Daily Schedule §6══════════"), false);
         source.sendSuccess(() -> Component.literal(String.format("§7Current Time: §e%s §7(Tick %d/24000, Day %d) §8[Active: §a%s§8]",
             clockTime, dayTime, dayCount, currentPhase)), false);
-        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/villagerstats toggle-roam to change)",
+        source.sendSuccess(() -> Component.literal(String.format("§7• AI Mode: %s §7(/evv toggle-roam to change)",
             noRoam ? "§aNo-Roam Active (Config ON)" : "§eVanilla Roaming Active (Config OFF)")), false);
         source.sendSuccess(() -> Component.literal(String.format("§7• Nearest Job Assignment: %s",
             VillagerAIConfig.get().assignNearestVillager ? "§aEnabled (Nearest villager claims on place & gen)" : "§eDisabled (Vanilla)")), false);
@@ -222,39 +222,11 @@ public class VillagerStatsCommand {
         return 1;
     }
 
-    private static String formatClockTime(long dayTime) {
-        long totalMinutes = ((dayTime + 6000L) % 24000L) * 60L / 1000L;
-        long hours = totalMinutes / 60L;
-        long minutes = totalMinutes % 60L;
-        return String.format("%02d:%02d", hours, minutes);
-    }
-
-    private static String getScheduledPhase(long dayTime, boolean isBaby) {
-        if (isBaby) {
-            if (dayTime < 3000L) return "IDLE (06:00 - 09:00)";
-            if (dayTime < 6000L) return "PLAY (09:00 - 12:00)";
-            if (dayTime < 10000L) return "IDLE (12:00 - 16:00)";
-            if (dayTime < 12000L) return "PLAY (16:00 - 18:00)";
-            return "REST (18:00 - 06:00)";
-        } else {
-            if (dayTime < 2000L) return "IDLE (06:00 - 08:00)";
-            if (dayTime < 9000L) return "WORK (08:00 - 15:00)";
-            if (dayTime < 11000L) return "MEET (15:00 - 17:00)";
-            if (dayTime < 12000L) return "IDLE (17:00 - 18:00)";
-            return "REST (18:00 - 06:00)";
-        }
-    }
-
     private static String formatPos(Optional<GlobalPos> globalPos) {
         if (globalPos.isEmpty()) {
             return "§cNone";
         }
         BlockPos pos = globalPos.get().pos();
         return String.format("§f[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    private static String capitalize(String str) {
-        if (str == null || str.isEmpty()) return "None";
-        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
 }

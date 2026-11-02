@@ -90,14 +90,14 @@ public class VillagerStatsData {
         return data;
     }
 
-    private static String formatClockTime(long dayTime) {
+    public static String formatClockTime(long dayTime) {
         long totalMinutes = ((dayTime + 6000L) % 24000L) * 60L / 1000L;
         long hours = totalMinutes / 60L;
         long minutes = totalMinutes % 60L;
         return String.format("%02d:%02d", hours, minutes);
     }
 
-    private static String getScheduledPhase(long dayTime, boolean isBaby) {
+    public static String getScheduledPhase(long dayTime, boolean isBaby) {
         if (isBaby) {
             if (dayTime < 3000L) return "IDLE (06:00 - 09:00)";
             if (dayTime < 6000L) return "PLAY (09:00 - 12:00)";
@@ -113,7 +113,7 @@ public class VillagerStatsData {
         }
     }
 
-    private static String formatPos(Optional<GlobalPos> globalPos) {
+    public static String formatPos(Optional<GlobalPos> globalPos) {
         if (globalPos == null || globalPos.isEmpty()) {
             return "None";
         }
@@ -121,7 +121,7 @@ public class VillagerStatsData {
         return String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ());
     }
 
-    private static String capitalize(String str) {
+    public static String capitalize(String str) {
         if (str == null || str.isEmpty()) return "None";
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
