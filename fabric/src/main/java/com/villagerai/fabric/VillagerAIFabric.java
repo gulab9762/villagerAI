@@ -7,8 +7,13 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public class VillagerAIFabric implements ModInitializer {
+    private static boolean initialized = false;
+
     @Override
     public void onInitialize() {
+        if (initialized) return;
+        initialized = true;
+
         VillagerAICommon.init();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
