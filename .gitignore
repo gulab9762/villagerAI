@@ -15,7 +15,8 @@ bin/
 *.log
 gradle-local.properties
 
-scripts/
+scripts/*
+!scripts/rag.js
 .eclipse/
 */.eclipse/
 assets/

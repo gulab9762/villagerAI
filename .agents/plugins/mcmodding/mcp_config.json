@@ -1,7 +1,10 @@
 {
   "mcpServers": {
     "mcmodding": {
-      "command": "mcmodding-mcp"
+      "command": "node",
+      "args": [
+        "C:/Users/Gulab/AppData/Roaming/npm/node_modules/mcmodding-mcp/dist/index.js"
+      ]
     }
   }
 }
