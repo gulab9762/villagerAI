@@ -15,8 +15,14 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
+      "init": [
+        "com.villagerai.quilt.VillagerAIQuilt"
+      ],
       "main": [
         "com.villagerai.quilt.VillagerAIQuilt"
+      ],
+      "client_init": [
+        "com.villagerai.quilt.client.VillagerAIQuiltClient"
       ],
       "client": [
         "com.villagerai.quilt.client.VillagerAIQuiltClient"
