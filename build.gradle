@@ -6,8 +6,93 @@ plugins {
 
 tasks.register('buildAllMods') {
     group = 'build'
-    description = 'Builds all supported mod loader JARs.'
-    dependsOn ':fabric:build', ':neoforge:build', ':forge:build'
+    description = 'Builds all supported mod loader JARs and the Universal multi-loader JAR.'
+    dependsOn ':fabric:build', ':quilt:build', ':neoforge:build', ':forge:build', 'universalJar'
+}
+
+// Universal Multi-Loader JAR Task
+tasks.register('universalJar', Jar) {
+    group = 'build'
+    description = 'Builds a single universal JAR supporting Fabric, Quilt, NeoForge, and Forge.'
+    archiveBaseName = "${project.findProperty('jar_base_name') ?: mod_id}-${minecraft_version}"
+    archiveVersion = "${version}"
+    destinationDirectory = layout.buildDirectory.dir('libs')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    dependsOn ':fabric:jar', ':quilt:jar', ':neoforge:jar', ':forge:jar'
+
+    from {
+        [
+            project(':fabric').tasks.jar.archiveFile,
+            project(':quilt').tasks.jar.archiveFile,
+            project(':neoforge').tasks.jar.archiveFile,
+            project(':forge').tasks.jar.archiveFile
+        ].collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes([
+            'Specification-Title'   : mod_name,
+            'Specification-Vendor'  : mod_author,
+            'Specification-Version' : project.version,
+            'Implementation-Title'  : "${mod_name} Multi-Loader",
+            'Implementation-Version': project.version,
+            'Implementation-Vendor' : mod_author,
+            'Built-On-Minecraft'    : minecraft_version
+        ])
+    }
+}
+
+tasks.register('copyUniversalJar') {
+    group = 'distribution'
+    description = 'Copies the Universal JAR to the MultiMC 26.3 instance and the user Downloads folder.'
+    dependsOn 'universalJar'
+
+    doLast {
+        def jarFile = tasks.named('universalJar', Jar).get().archiveFile.get().asFile
+        if (!jarFile.exists()) {
+            throw new GradleException("Universal JAR not found at ${jarFile.absolutePath}")
+        }
+
+        def destinations = [
+            file('D:/MultiMC/instances/26.3/.minecraft/mods'),
+            file("${System.getProperty('user.home')}/Downloads")
+        ]
+        def altMultiMcMods = file('D:/MultiMC/instances/26.3/mods')
+        if (altMultiMcMods.exists()) {
+            destinations.add(altMultiMcMods)
+        }
+
+        destinations.each { targetDir ->
+            if (!targetDir.exists()) {
+                targetDir.mkdirs()
+            }
+
+            // Remove any previous versions of this mod in the target directory
+            targetDir.listFiles()?.each { existingFile ->
+                if ((existingFile.name.startsWith("villagerai-") ||
+                     existingFile.name.startsWith("evv-") ||
+                     existingFile.name.startsWith("easy-vanilla-villagers-")) && existingFile.name.endsWith('.jar')) {
+                    existingFile.delete()
+                    println "Removed old mod jar: ${existingFile.name} from ${targetDir.absolutePath}"
+                }
+            }
+
+            copy {
+                from jarFile
+                into targetDir
+            }
+            println "Copied ${jarFile.name} -> ${targetDir.absolutePath}"
+        }
+    }
+}
+
+universalJar.finalizedBy('copyUniversalJar')
+
+tasks.register('buildUniversalJar') {
+    group = 'build'
+    description = 'Builds and deploys the Universal multi-loader JAR.'
+    dependsOn 'universalJar', 'copyUniversalJar'
 }
 
 // Fabric Tasks
@@ -35,6 +120,31 @@ tasks.register('cleanFabric') {
     dependsOn ':fabric:clean'
 }
 
+// Quilt Tasks
+tasks.register('buildQuilt') {
+    group = 'quilt'
+    description = 'Builds the Quilt mod JAR.'
+    dependsOn ':quilt:build'
+}
+
+tasks.register('runQuiltClient') {
+    group = 'quilt'
+    description = 'Runs the Quilt development client.'
+    dependsOn ':quilt:runClient'
+}
+
+tasks.register('runQuiltServer') {
+    group = 'quilt'
+    description = 'Runs the Quilt development server.'
+    dependsOn ':quilt:runServer'
+}
+
+tasks.register('cleanQuilt') {
+    group = 'quilt'
+    description = 'Cleans Quilt build outputs.'
+    dependsOn ':quilt:clean'
+}
+
 // NeoForge Tasks
 tasks.register('buildNeoForge') {
     group = 'neoforge'
@@ -48,6 +158,17 @@ tasks.register('runNeoForgeClient') {
     dependsOn ':neoforge:runClient'
 }
 
+tasks.register('runNeoForgeServer') {
+    group = 'neoforge'
+    description = 'Runs the NeoForge development server.'
+    dependsOn ':neoforge:runServer'
+}
+
+tasks.register('cleanNeoForge') {
+    group = 'neoforge'
+    description = 'Cleans NeoForge build outputs.'
+    dependsOn ':neoforge:clean'
+}
 
 // Forge Tasks
 tasks.register('buildForge') {
@@ -92,5 +213,3 @@ tasks.register('notifyBuildComplete') {
         println "Notification sent to ntfy.sh/antigravity (Status: ${responseCode})"
     }
 }
-
-

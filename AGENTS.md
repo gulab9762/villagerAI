@@ -1,10 +1,13 @@
-# VillagerAI Project Guidelines & Architecture Map
+# Easy Vanilla Villagers (EVV) Project Guidelines & Architecture Map
 
 ## Overview
-**Villager Tweaks / VillagerAI** is a Minecraft optimization mod that overhauls villager AI routines, pathfinding discipline, workstation claiming, and adds an in-game inspection overlay.
+**Easy Vanilla Villagers (EVV)** is a Minecraft optimization mod that overhauls villager AI routines, pathfinding discipline, workstation claiming, and adds an in-game inspection overlay.
+- **Mod ID**: `evv`
+- **Mod Name**: `Easy Vanilla Villagers`
+- **JAR Naming**: `easy-vanilla-villagers-${minecraft_version}-${version}.jar` (Universal) and `easy-vanilla-villagers-${platform}-${minecraft_version}-${version}.jar` (Platform-specific)
 - **Minecraft Version**: `26.3` (Java 25+)
-- **Mod Loaders**: Fabric (`0.160.6+26.3` / Loader `0.19.5`) & NeoForge (`26.3.0.1-beta`)
-- **Structure**: Architectury / Multiloader project (`common`, `fabric`, `neoforge`)
+- **Supported Mod Loaders**: Fabric (`0.160.6+26.3`), Quilt (`0.27.0+`), NeoForge (`26.3.0.1-beta`), and Forge (`66.0.10+`)
+- **Structure**: MultiLoader architecture (`common`, `fabric`, `quilt`, `neoforge`, `forge`) + Root Universal JAR builder
 
 ---
 
@@ -25,8 +28,8 @@ Always use `scripts/rag.js` to verify Minecraft method signatures, parameter nam
 All gameplay, AI, configuration, commands, and client UI logic MUST be placed here:
 - `com.villagerai.ai.AcquireNearestJobSite`: Custom `Behavior<Villager>` replacing vanilla `AcquirePoi` for `JOB_SITE`. Enforces physical proximity claiming.
 - `com.villagerai.ai.VillagerAssignmentHelper`: Distance calculations, nearest unemployed villager search, POI reservation checks.
-- `com.villagerai.config.VillagerAIConfig`: Configuration system (`config/villagerai.json`), controlling `disableRoaming` and `assignNearestVillager`.
-- `com.villagerai.command.VillagerStatsCommand`: `/villagerstats` command logic (status, calendar, toggle-roam).
+- `com.villagerai.config.VillagerAIConfig`: Configuration system (`config/evv.json` with fallback `config/villagerai.json`), controlling `disableRoaming` and `assignNearestVillager`.
+- `com.villagerai.command.VillagerStatsCommand`: `/evv` (Easy Vanilla Villagers) and `/villagerstats` command logic (status, calendar, toggle-roam).
 - `com.villagerai.client`: HUD overlay rendering (`VillagerStatsScreen`, `VillagerStatsClient`, `VillagerStatsData`) triggered via keybind `V`.
 - `com.villagerai.mixin`:
   - `VillagerGoalPackagesMixin`: Overrides villager core, idle, rest, and meet packages. Strips aimless wandering when `disableRoaming` is active.
@@ -34,24 +37,38 @@ All gameplay, AI, configuration, commands, and client UI logic MUST be placed he
 
 ### 2. `fabric/` (Fabric Modloader Platform)
 - Entrypoints: `VillagerAIFabric` (ModInitializer) and `VillagerAIFabricClient` (ClientModInitializer).
-- Config / Manifest: `src/main/resources/fabric.mod.json`, `villagerai.fabric.mixins.json`.
+- Config / Manifest: `src/main/resources/fabric.mod.json`, `src/main/resources/quilt.mod.json`, `evv.mixins.json`.
 
-### 3. `neoforge/` (NeoForge Modloader Platform)
-- Entrypoints: `VillagerAINeoForge` (`@Mod("villagerai")`) and `VillagerAINeoForgeClient`.
-- Config / Manifest: `src/main/resources/META-INF/neoforge.mods.toml`, `villagerai.neoforge.mixins.json`.
+### 3. `quilt/` (Quilt Modloader Platform)
+- Entrypoints: `VillagerAIQuilt` (ModInitializer) and `VillagerAIQuiltClient` (ClientModInitializer).
+- Config / Manifest: `src/main/resources/quilt.mod.json`, `src/main/resources/fabric.mod.json`, `evv.mixins.json`.
+
+### 4. `neoforge/` (NeoForge Modloader Platform)
+- Entrypoints: `VillagerAINeoForge` (`@Mod("evv")`) and `VillagerAINeoForgeClient`.
+- Config / Manifest: `src/main/resources/META-INF/neoforge.mods.toml`, `evv.mixins.json`.
+
+### 5. `forge/` (Forge Modloader Platform)
+- Entrypoints: `VillagerAIForge` (`@Mod("evv")`) and `VillagerAIForgeClient`.
+- Config / Manifest: `src/main/resources/META-INF/mods.toml`, `evv.mixins.json`.
 
 ---
 
 ## Development & Build Commands
 - **Check compile (Common)**: `./gradlew :common:compileJava`
-- **Build Fabric jar**: `./gradlew :fabric:build`
-- **Build NeoForge jar**: `./gradlew :neoforge:build`
-- **Full project build**: `./gradlew build`
+- **Build Fabric jar**: `./gradlew :fabric:build` (or `./gradlew buildFabric`)
+- **Build Quilt jar**: `./gradlew :quilt:build` (or `./gradlew buildQuilt`)
+- **Build NeoForge jar**: `./gradlew :neoforge:build` (or `./gradlew buildNeoForge`)
+- **Build Forge jar**: `./gradlew :forge:build` (or `./gradlew buildForge`)
+- **Build Universal Multi-Loader JAR**: `./gradlew universalJar` (or `./gradlew buildUniversalJar`)
+  - Generates `build/libs/easy-vanilla-villagers-26.3-1.0.0.jar` compatible across Fabric, Quilt, NeoForge, and Forge.
+  - Automatically copies the universal jar to `D:\MultiMC\instances\26.3\.minecraft\mods` and `~/Downloads`.
+- **Copy Universal JAR explicitly**: `./gradlew copyUniversalJar`
+- **Full project build (all loaders + universal jar)**: `./gradlew buildAllMods`
 
 ---
 
 ## Coding Rules & Constraints
-1. **Multiloader Purity**: NEVER import Fabric or NeoForge classes inside `common/`. Keep `common/` pure vanilla Minecraft and Java.
+1. **Multiloader Purity**: NEVER import Fabric, Quilt, NeoForge, or Forge classes inside `common/`. Keep `common/` pure vanilla Minecraft and Java.
 2. **Brain & Behavior Principles**:
    - Villagers use Mojang's `Brain<Villager>` system with `Activity` phases (`CORE`, `IDLE`, `WORK`, `REST`, `MEET`).
    - Memories are stored via `MemoryModuleType` (e.g. `JOB_SITE`, `POTENTIAL_JOB_SITE`, `WALK_TARGET`, `HOME`, `MEETING_POINT`).
@@ -60,4 +77,3 @@ All gameplay, AI, configuration, commands, and client UI logic MUST be placed he
    - Use `@Inject` with `cancellable = true` or targeted `@ModifyVariable` / `@Redirect` where safe.
    - Always verify target method signatures using `node scripts/rag.js method <MethodName>`.
 4. **Git Commits**: Follow `.agents/rules/git-commits.md` (natural, casual, concise messages).
-

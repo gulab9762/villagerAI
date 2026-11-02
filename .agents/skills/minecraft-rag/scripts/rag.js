@@ -112,7 +112,7 @@ async function main() {
         return;
       }
       console.log(`\n=== 🔍 LOCAL PROJECT SEARCH: "${query}" ===\n`);
-      const searchDirs = ['common', 'fabric', 'neoforge'];
+      const searchDirs = ['common', 'fabric', 'quilt', 'neoforge', 'forge'];
       let foundCount = 0;
       for (const d of searchDirs) {
         const dirPath = path.join(projectRoot, d);

@@ -19,5 +19,5 @@ scripts/*
 !scripts/rag.js
 .eclipse/
 */.eclipse/
-assets/
+/assets/
 local/

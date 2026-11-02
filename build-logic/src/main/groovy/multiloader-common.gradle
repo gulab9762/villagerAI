@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    archivesName = "${project.findProperty('jar_base_name') ?: mod_id}-${project.name}-${minecraft_version}"
 }
 
 java {
@@ -51,6 +51,7 @@ processResources {
             'neoforge_loader_version_range': neoforge_loader_version_range,
             'forge_version'                : forge_version,
             'forge_loader_version_range'   : forge_loader_version_range,
+            'quilt_loader_version'         : project.findProperty('quilt_loader_version') ?: '0.27.0',
             'credits'                      : credits,
             'java_version'                 : java_version
     ]
@@ -63,7 +64,7 @@ processResources {
         expand expandProps
     }
 
-    filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+    filesMatching(['pack.mcmeta', 'fabric.mod.json', 'quilt.mod.json', '*.mixins.json']) {
         expand jsonExpandProps
     }
 

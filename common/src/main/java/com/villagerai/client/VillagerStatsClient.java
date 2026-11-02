@@ -10,13 +10,10 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import java.util.Comparator;
-import java.util.List;
-
 public class VillagerStatsClient {
 
     public static final KeyMapping KEY_MAPPING = new KeyMapping(
-        "key.villagerai.stats",
+        "key.evv.stats",
         InputConstants.KEY_V,
         KeyMapping.Category.MISC
     );

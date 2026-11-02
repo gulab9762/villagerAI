@@ -1,14 +1,14 @@
-# 🧠 Villager Tweaks
+# 🧠 Easy Vanilla Villagers (EVV)
 
 **Intelligent behaviors, no-roam discipline, better workstation claims, and live in-game stats for Minecraft villagers.**
 
-![Minecraft 26.3](https://img.shields.io/badge/Minecraft-26.3-brightgreen.svg) ![Fabric | NeoForge](<https://img.shields.io/badge/Modloader-Fabric | NeoForge-blue.svg>) ![MIT License](https://img.shields.io/badge/License-MIT-orange.svg) ![Client and Server](<https://img.shields.io/badge/Environment-Client & Server-purple.svg>)
+![Minecraft 26.3](https://img.shields.io/badge/Minecraft-26.3-brightgreen.svg) ![Fabric | Quilt | NeoForge | Forge](<https://img.shields.io/badge/Modloader-Fabric%20|%20Quilt%20|%20NeoForge%20|%20Forge-blue.svg>) ![Multi-Loader JAR](https://img.shields.io/badge/Universal%20JAR-Supported-success.svg) ![MIT License](https://img.shields.io/badge/License-MIT-orange.svg) ![Client and Server](<https://img.shields.io/badge/Environment-Client%20&%20Server-purple.svg>)
 
 ***
 
 ## 🌟 Overview
 
-**Villagers Tweaks** is a lightweight, optimization-focused mod designed to completely fix and overhaul vanilla Minecraft's frustrating villager AI, pathfinding, and profession mechanics. If you are tired of villagers claiming workstations from miles away, stealing each other's jobs, or wandering out of their trading cells, this mod is the definitive quality-of-life solution for your world or modpack.
+**Easy Vanilla Villagers (EVV)** is a lightweight, optimization-focused mod designed to completely fix and overhaul vanilla Minecraft's frustrating villager AI, pathfinding, and profession mechanics. If you are tired of villagers claiming workstations from miles away, stealing each other's jobs, or wandering out of their trading cells, this mod is the definitive quality-of-life solution for your world or modpack.
 
 ## 🛠️ Key Features
 
@@ -16,9 +16,9 @@
 *   **No-Roam Trading Discipline:** Implements strict pathfinding boundaries to stop villagers from wandering aimlessly. Keeps your traders exactly where you want them, making trading center layouts and automated villager farms perfectly predictable.
 *   **Optimized AI Performance:** Reduces the constant background pathfinding checks that cause server lag in large trading hubs or automated villager breeders.
 
-## 🚀 Why Download Villagers Tweaks?
+## 🚀 Why Download Easy Vanilla Villagers?
 
-Building a **Minecraft villager trading hall** should be fun, not an exercise in frustration. Vanilla pathfinding often allows roaming villagers to lock onto a **job block** they can't even reach, preventing other nearby villagers from taking the profession. **Villagers Tweaks** forces the AI to make logical local decisions, allowing you to cycle trades, assign professions, and lock down your trading setup effortlessly.
+Building a **Minecraft villager trading hall** should be fun, not an exercise in frustration. Vanilla pathfinding often allows roaming villagers to lock onto a **job block** they can't even reach, preventing other nearby villagers from taking the profession. **Easy Vanilla Villagers** forces the AI to make logical local decisions, allowing you to cycle trades, assign professions, and lock down your trading setup effortlessly.
 
 Perfect for vanilla-plus playstyles, large survival servers, and custom modpacks!
 
@@ -51,20 +51,20 @@ Press **`V`** (customizable in _Controls -> Key Binds_) at any time to open a cl
 
 ## 💻 Commands
 
-All commands can be executed via `/villagerstats` or `/villagerStats`:
+All commands can be executed via `/evv` (Easy Vanilla Villagers), `/villagerstats`, or `/villagerStats`:
 
-*   `/villagerstats` — Smart command: inspects targeted villager, or shows daily calendar if no villager is targeted.
-*   `/villagerstats status` — Shows targeted villager info in chat.
-*   `/villagerstats calendar` — Shows village daily schedule and mod settings.
-*   `/villagerstats toggle-roam` _(Requires OP / Permission Level 2)_ — Toggles No-Roam AI on/off and refreshes all loaded villagers instantly.
+*   `/evv` or `/villagerstats` — Smart command: inspects targeted villager, or shows daily calendar if no villager is targeted.
+*   `/evv status` — Shows targeted villager info in chat.
+*   `/evv calendar` — Shows village daily schedule and mod settings.
+*   `/evv toggle-roam` _(Requires OP / Permission Level 2)_ — Toggles No-Roam AI on/off and refreshes all loaded villagers instantly.
 
 ***
 
 ## ⚙️ Configuration
 
-Configuration is located at `config/villagerai.json`:
+Configuration is located at `config/evv.json` (also backward-compatible with `config/villagerai.json`):
 
-```
+```json
 {
   "disableRoaming": true,
   "assignNearestVillager": true
@@ -88,5 +88,8 @@ Configuration is located at `config/villagerai.json`:
 *   **Minecraft**: `26.3`
 *   **Supported Mod Loaders**:
     *   **Fabric** (Requires [Fabric Loader](https://fabricmc.net/) and [Fabric API](https://modrinth.com/mod/fabric-api))
-    *   **NeoForge**
+    *   **Quilt** (Requires [Quilt Loader](https://quiltmc.org/))
+    *   **NeoForge** (Requires [NeoForge](https://neoforged.net/))
+    *   **Forge** (Requires [Minecraft Forge](https://files.minecraftforge.net/))
+    *   **Universal Multi-Loader JAR**: Drop `easy-vanilla-villagers-26.3-1.0.0.jar` into any supported loader's `mods` folder!
 *   **Java**: 25+
