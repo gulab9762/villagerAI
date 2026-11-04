@@ -1,5 +1,12 @@
 # Minecraft Modding & Brain AI Guidelines
 
+## 🛑 Strict Grounding & Anti-Hallucination Policy
+1. **Never fabricate or assume non-existent Minecraft/modloader versions**:
+   - For example: `1.21.11` is the absolute final release of the `1.21.x` series. Versions `1.21.12`, `1.21.13`, etc. DO NOT exist. The release cycle jumped directly from `1.21.11` to `26.1`.
+2. **Always verify version history, API signatures, and descriptors**:
+   - Query project manifests, official release tags, or run `node scripts/rag.js class/method` before stating compatibility.
+   - Never extrapolate semantic version numbers without verification.
+
 ## Target Environment
 - **Minecraft**: 26.3
 - **Java**: 25+

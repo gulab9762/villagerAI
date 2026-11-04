@@ -5,8 +5,8 @@
 - **Mod ID**: `evv`
 - **Mod Name**: `Easy Vanilla Villagers`
 - **JAR Naming**: `easy-vanilla-villagers-${minecraft_version}-${version}.jar` (Universal) and `easy-vanilla-villagers-${platform}-${minecraft_version}-${version}.jar` (Platform-specific)
-- **Minecraft Version**: `26.3` (Java 25+)
-- **Supported Mod Loaders**: Fabric (`0.160.6+26.3`), Quilt (`0.27.0+`), NeoForge (`26.3.0.1-beta`), and Forge (`66.0.10+`)
+- **Minecraft Version**: `26.3` (Java 25+) on main, `1.21.11` (Java 21) on branch `1.21.11`
+- **Supported Mod Loaders**: Fabric, Quilt, NeoForge, and Forge
 - **Structure**: MultiLoader architecture (`common`, `fabric`, `quilt`, `neoforge`, `forge`) + Root Universal JAR builder
 
 ---
@@ -19,6 +19,15 @@ This project has a built-in offline RAG tool for instant lookups without guessin
 - **Search project code**: `node scripts/rag.js project "<query>"` (e.g. `node scripts/rag.js project "AcquireNearestJobSite"`)
 
 Always use `scripts/rag.js` to verify Minecraft method signatures, parameter names, and obfuscated mappings before writing Mixins or AI behaviors.
+
+---
+
+## 🛑 Strict Grounding & Anti-Hallucination Policy
+1. **Never guess, assume, or hallucinate non-existent versions**:
+   - `1.21.11` is the absolute final release of the `1.21.x` cycle. `1.21.12` and `1.21.13` do NOT exist. Mojang jumped directly from `1.21.11` to `26.1`.
+   - Never extrapolate semantic version numbers without verification.
+2. **Verify against facts**: Always verify release versions, mappings, and class names via the RAG database, gradle dependencies, or official metadata before presenting them.
+3. **If uncertain**, explicitly look it up or ask the user instead of guessing.
 
 ---
 
@@ -60,8 +69,8 @@ All gameplay, AI, configuration, commands, and client UI logic MUST be placed he
 - **Build NeoForge jar**: `./gradlew :neoforge:build` (or `./gradlew buildNeoForge`)
 - **Build Forge jar**: `./gradlew :forge:build` (or `./gradlew buildForge`)
 - **Build Universal Multi-Loader JAR**: `./gradlew universalJar` (or `./gradlew buildUniversalJar`)
-  - Generates `build/libs/easy-vanilla-villagers-26.3-1.0.0.jar` compatible across Fabric, Quilt, NeoForge, and Forge.
-  - Automatically copies the universal jar to `D:\MultiMC\instances\26.3\.minecraft\mods` and `~/Downloads`.
+  - Generates `build/libs/easy-vanilla-villagers-${minecraft_version}-1.0.0.jar` compatible across Fabric, Quilt, NeoForge, and Forge.
+  - Automatically copies the universal jar to `D:\MultiMC\instances\${minecraft_version}\.minecraft\mods` and `~/Downloads`.
 - **Copy Universal JAR explicitly**: `./gradlew copyUniversalJar`
 - **Full project build (all loaders + universal jar)**: `./gradlew buildAllMods`
 
