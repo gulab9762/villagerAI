@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="MIT"
+
+[[mods]]
+modId="evv"
+version="1.0.0"
+displayName="Easy Vanilla Villagers"
+authors="Antigravity"
+description="Easy Vanilla Villagers - Intelligent behaviors, no-roam discipline, better workstation claims, and live stats for Minecraft villagers."
+iconFile="icon.png"
+
+[[mixins]]
+config="evv.mixins_forge.json"
+
+[[dependencies.evv]]
+    modId="forge"
+    mandatory=true
+    versionRange="[1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.evv]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.10, 1.21.13)"
+    ordering="NONE"
+    side="BOTH"

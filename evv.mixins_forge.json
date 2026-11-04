@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.villagerai.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "VillagerGoalPackagesMixin_forge",
+    "ServerLevelMixin_forge"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+
