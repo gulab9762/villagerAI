@@ -63,7 +63,7 @@ public abstract class VillagerGoalPackagesMixin {
      * socializing, breeding, trading, and looking around.
      */
     @Inject(method = "getIdlePackage", at = @At("HEAD"), cancellable = true)
-    private static void onGetIdlePackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+    private static void onGetIdlePackage(Holder<VillagerProfession> profession, float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
         if (!VillagerAIConfig.get().disableRoaming) {
             return;
         }
@@ -161,7 +161,7 @@ public abstract class VillagerGoalPackagesMixin {
      * keeping gathering and socialization at the meeting point.
      */
     @Inject(method = "getMeetPackage", at = @At("HEAD"), cancellable = true)
-    private static void onGetMeetPackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+    private static void onGetMeetPackage(Holder<VillagerProfession> profession, float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
         if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableBellRoaming) {
             return;
         }
@@ -194,7 +194,7 @@ public abstract class VillagerGoalPackagesMixin {
      * and rest peacefully without restless pacing.
      */
     @Inject(method = "getRestPackage", at = @At("HEAD"), cancellable = true)
-    private static void onGetRestPackage(float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
+    private static void onGetRestPackage(Holder<VillagerProfession> profession, float speedModifier, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends BehaviorControl<? super Villager>>>> cir) {
         if (!VillagerAIConfig.get().disableRoaming || !VillagerAIConfig.get().disableRestRoaming) {
             return;
         }
