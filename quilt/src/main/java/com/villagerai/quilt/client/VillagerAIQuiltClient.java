@@ -3,7 +3,7 @@ package com.villagerai.quilt.client;
 import com.villagerai.client.VillagerStatsClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 public class VillagerAIQuiltClient implements ClientModInitializer {
     private static boolean initialized = false;
@@ -13,7 +13,7 @@ public class VillagerAIQuiltClient implements ClientModInitializer {
         if (initialized) return;
         initialized = true;
 
-        KeyMappingHelper.registerKeyMapping(VillagerStatsClient.KEY_MAPPING);
+        KeyBindingHelper.registerKeyBinding(VillagerStatsClient.KEY_MAPPING);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (VillagerStatsClient.KEY_MAPPING.consumeClick()) {

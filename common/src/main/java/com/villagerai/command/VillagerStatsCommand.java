@@ -144,8 +144,8 @@ public class VillagerStatsCommand {
 
     private static int showVillagerStatus(CommandSourceStack source, Villager villager) {
         ServerLevel level = villager.level() instanceof ServerLevel sl ? sl : source.getLevel();
-        long dayTime = level.getOverworldClockTime() % 24000L;
-        long dayCount = level.getOverworldClockTime() / 24000L;
+        long dayTime = level.getLevelData().getDayTime() % 24000L;
+        long dayCount = level.getLevelData().getDayTime() / 24000L;
         String clockTime = VillagerStatsData.formatClockTime(dayTime);
 
         VillagerData data = villager.getVillagerData();
@@ -199,8 +199,8 @@ public class VillagerStatsCommand {
 
     private static int showCalendar(CommandSourceStack source) {
         ServerLevel level = source.getLevel();
-        long dayTime = level.getOverworldClockTime() % 24000L;
-        long dayCount = level.getOverworldClockTime() / 24000L;
+        long dayTime = level.getLevelData().getDayTime() % 24000L;
+        long dayCount = level.getLevelData().getDayTime() / 24000L;
         String clockTime = VillagerStatsData.formatClockTime(dayTime);
         String currentPhase = VillagerStatsData.getScheduledPhase(dayTime, false);
         boolean noRoam = VillagerAIConfig.get().disableRoaming;

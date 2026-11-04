@@ -16,7 +16,7 @@ config="${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[1,)"
     ordering="NONE"
     side="BOTH"
 
@@ -26,4 +26,3 @@ config="${mod_id}.mixins.json"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
-

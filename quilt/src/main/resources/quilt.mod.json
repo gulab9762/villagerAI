@@ -35,7 +35,7 @@
       },
       {
         "id": "minecraft",
-        "versions": ">=${minecraft_version}"
+        "versions": ">=1.21.10 <=1.21.12"
       }
     ]
   },

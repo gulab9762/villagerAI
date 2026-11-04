@@ -1,7 +1,7 @@
 package com.villagerai.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -62,9 +62,8 @@ public class VillagerStatsScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
-        // Draw standard subtle background dimming
-        this.extractTransparentBackground(extractor);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderTransparentBackground(guiGraphics);
 
         // Calculate card dimensions dynamically based on content width
         int maxWidth = 0;
@@ -79,26 +78,28 @@ public class VillagerStatsScreen extends Screen {
         int startY = (this.height - cardHeight) / 2;
 
         // Outer glow/shadow
-        extractor.fill(startX - 2, startY - 2, startX + cardWidth + 2, startY + cardHeight + 2, 0x60000000);
+        guiGraphics.fill(startX - 2, startY - 2, startX + cardWidth + 2, startY + cardHeight + 2, 0x60000000);
         // Tooltip outer border
-        extractor.fill(startX - 1, startY - 1, startX + cardWidth + 1, startY + cardHeight + 1, 0xFF35354A);
+        guiGraphics.fill(startX - 1, startY - 1, startX + cardWidth + 1, startY + cardHeight + 1, 0xFF35354A);
         // Tooltip deep translucent background
-        extractor.fill(startX, startY, startX + cardWidth, startY + cardHeight, 0xF0101018);
+        guiGraphics.fill(startX, startY, startX + cardWidth, startY + cardHeight, 0xF0101018);
         // Golden accent line on top edge
-        extractor.fill(startX + 1, startY + 1, startX + cardWidth - 1, startY + 2, 0x80FFAA00);
+        guiGraphics.fill(startX + 1, startY + 1, startX + cardWidth - 1, startY + 2, 0x80FFAA00);
 
         // Render each line
         int textY = startY + 10;
         for (Component line : lines) {
             if (line.getString().equals("---")) {
                 // Horizontal divider line
-                extractor.fill(startX + 10, textY + 3, startX + cardWidth - 10, textY + 4, 0x2AFFFFFF);
+                guiGraphics.fill(startX + 10, textY + 3, startX + cardWidth - 10, textY + 4, 0x2AFFFFFF);
                 textY += 8;
             } else {
-                extractor.text(this.font, line, startX + 12, textY, 0xFFFFFFFF, true);
+                guiGraphics.drawString(this.font, line, startX + 12, textY, 0xFFFFFFFF, true);
                 textY += 12;
             }
         }
+
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class VillagerStatsData {
         VillagerStatsData data = new VillagerStatsData();
         data.hasVillager = true;
 
-        long clockTicks = level.getOverworldClockTime();
+        long clockTicks = level.getLevelData().getDayTime();
         data.dayTime = clockTicks % 24000L;
         data.dayCount = clockTicks / 24000L;
         data.clockTime = formatClockTime(data.dayTime);
@@ -79,7 +79,7 @@ public class VillagerStatsData {
         VillagerStatsData data = new VillagerStatsData();
         data.hasVillager = false;
 
-        long clockTicks = level.getOverworldClockTime();
+        long clockTicks = level.getLevelData().getDayTime();
         data.dayTime = clockTicks % 24000L;
         data.dayCount = clockTicks / 24000L;
         data.clockTime = formatClockTime(data.dayTime);
