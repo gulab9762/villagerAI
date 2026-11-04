@@ -2,6 +2,90 @@ plugins {
     id 'net.fabricmc.fabric-loom-remap' version '1.15.5' apply false
     id 'net.neoforged.moddev' version '2.0.141' apply false
     id 'net.minecraftforge.gradle' version '7.0.40' apply false
+    id 'io.github.pacifistmc.forgix' version '2.0.0'
+}
+
+allprojects {
+    version = project.version
+    group = project.group
+}
+
+// Disable default root jar since this is a multi-project container
+tasks.named('jar') {
+    enabled = false
+}
+
+def hasMultipleLoaders = [findProject(':fabric'), findProject(':neoforge'), findProject(':forge'), findProject(':quilt')].count { it != null } > 1
+
+if (hasMultipleLoaders) {
+    forgix {
+        archiveBaseName = "${project.findProperty('jar_base_name') ?: mod_id}-${minecraft_version}"
+        archiveClassifier = ""
+        destinationDirectory = layout.buildDirectory.dir("libs")
+        autoRun = true
+    }
+}
+
+gradle.projectsEvaluated {
+    if (hasMultipleLoaders) {
+        forgix {
+            if (findProject(':fabric') != null) {
+                fabric {
+                    def task = project(':fabric').tasks.findByName('remapJar') != null ?
+                        project(':fabric').tasks.named('remapJar') : project(':fabric').tasks.named('jar')
+                    inputJar = task.flatMap { it.archiveFile }
+                }
+            }
+            if (findProject(':neoforge') != null) {
+                neoforge {
+                    def task = project(':neoforge').tasks.findByName('remapJar') != null ?
+                        project(':neoforge').tasks.named('remapJar') : project(':neoforge').tasks.named('jar')
+                    inputJar = task.flatMap { it.archiveFile }
+                }
+            }
+            if (findProject(':forge') != null) {
+                forge {
+                    def task = project(':forge').tasks.findByName('remapJar') != null ?
+                        project(':forge').tasks.named('remapJar') : project(':forge').tasks.named('jar')
+                    inputJar = task.flatMap { it.archiveFile }
+                }
+            }
+            if (findProject(':quilt') != null) {
+                quilt {
+                    def task = project(':quilt').tasks.findByName('remapJar') != null ?
+                        project(':quilt').tasks.named('remapJar') : project(':quilt').tasks.named('jar')
+                    inputJar = task.flatMap { it.archiveFile }
+                }
+            }
+        }
+
+        tasks.named('mergeJars').configure {
+            if (findProject(':fabric') != null) {
+                dependsOn(project(':fabric').tasks.findByName('remapJar') != null ?
+                    project(':fabric').tasks.named('remapJar') : project(':fabric').tasks.named('jar'))
+            }
+            if (findProject(':neoforge') != null) {
+                dependsOn(project(':neoforge').tasks.findByName('remapJar') != null ?
+                    project(':neoforge').tasks.named('remapJar') : project(':neoforge').tasks.named('jar'))
+            }
+            if (findProject(':forge') != null) {
+                dependsOn(project(':forge').tasks.findByName('remapJar') != null ?
+                    project(':forge').tasks.named('remapJar') : project(':forge').tasks.named('jar'))
+            }
+            if (findProject(':quilt') != null) {
+                dependsOn(project(':quilt').tasks.findByName('remapJar') != null ?
+                    project(':quilt').tasks.named('remapJar') : project(':quilt').tasks.named('jar'))
+            }
+        }
+    }
+}
+
+if (hasMultipleLoaders) {
+    tasks.register('universalJar') {
+        group = 'forgix'
+        description = 'Merges all modloader jars into a single universal jar'
+        dependsOn('mergeJars')
+    }
 }
 
 tasks.register('buildAllMods') {
@@ -10,50 +94,22 @@ tasks.register('buildAllMods') {
     dependsOn ':fabric:build', ':quilt:build', ':neoforge:build', ':forge:build', 'universalJar'
 }
 
-// Universal Multi-Loader JAR Task
-tasks.register('universalJar', Jar) {
+tasks.register('buildUniversalJar') {
     group = 'build'
-    description = 'Builds a single universal JAR supporting Fabric, Quilt, NeoForge, and Forge.'
-    archiveBaseName = "${project.findProperty('jar_base_name') ?: mod_id}-${minecraft_version}"
-    archiveVersion = "${version}"
-    destinationDirectory = layout.buildDirectory.dir('libs')
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    dependsOn ':fabric:jar', ':quilt:jar', ':neoforge:jar', ':forge:jar'
-
-    from {
-        [
-            project(':fabric').tasks.jar.archiveFile,
-            project(':quilt').tasks.jar.archiveFile,
-            project(':neoforge').tasks.jar.archiveFile,
-            project(':forge').tasks.jar.archiveFile
-        ].collect { zipTree(it) }
-    }
-
-    manifest {
-        attributes([
-            'Specification-Title'   : mod_name,
-            'Specification-Vendor'  : mod_author,
-            'Specification-Version' : project.version,
-            'Implementation-Title'  : "${mod_name} Multi-Loader",
-            'Implementation-Version': project.version,
-            'Implementation-Vendor' : mod_author,
-            'Built-On-Minecraft'    : minecraft_version,
-            'Fabric-Loom-Remap'     : 'false',
-            'MixinConfigs'          : "${project.findProperty('mod_id') ?: 'evv'}.mixins.json"
-        ])
-    }
+    description = 'Builds and deploys the Universal multi-loader JAR.'
+    dependsOn 'universalJar', 'copyUniversalJar'
 }
 
 tasks.register('copyUniversalJar') {
     group = 'distribution'
-    description = 'Copies the Universal JAR to the MultiMC 26.3 instance and the user Downloads folder.'
+    description = 'Copies the Universal JAR to the MultiMC instance and the user Downloads folder.'
     dependsOn 'universalJar'
 
     doLast {
-        def jarFile = tasks.named('universalJar', Jar).get().archiveFile.get().asFile
-        if (!jarFile.exists()) {
-            throw new GradleException("Universal JAR not found at ${jarFile.absolutePath}")
+        def mergedDir = layout.buildDirectory.dir("libs").get().asFile
+        def jarFile = mergedDir.listFiles()?.find { it.name.startsWith("${project.findProperty('jar_base_name') ?: mod_id}-${minecraft_version}") && it.name.endsWith('.jar') }
+        if (jarFile == null || !jarFile.exists()) {
+            throw new GradleException("Universal JAR not found in ${mergedDir.absolutePath}")
         }
 
         def destinations = [
@@ -87,14 +143,6 @@ tasks.register('copyUniversalJar') {
             println "Copied ${jarFile.name} -> ${targetDir.absolutePath}"
         }
     }
-}
-
-universalJar.finalizedBy('copyUniversalJar')
-
-tasks.register('buildUniversalJar') {
-    group = 'build'
-    description = 'Builds and deploys the Universal multi-loader JAR.'
-    dependsOn 'universalJar', 'copyUniversalJar'
 }
 
 // Fabric Tasks
