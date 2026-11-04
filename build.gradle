@@ -85,6 +85,25 @@ if (hasMultipleLoaders) {
         group = 'forgix'
         description = 'Merges all modloader jars into a single universal jar'
         dependsOn('mergeJars')
+        doLast {
+            def mergedDir = layout.buildDirectory.dir("libs").get().asFile
+            def jarFile = mergedDir.listFiles()?.find { it.name.startsWith("${project.findProperty('jar_base_name') ?: mod_id}-${minecraft_version}") && it.name.endsWith('.jar') }
+            if (jarFile != null && jarFile.exists()) {
+                def uri = URI.create("jar:" + jarFile.toURI())
+                def env = [create: 'false']
+                java.nio.file.FileSystems.newFileSystem(uri, env).withCloseable { fs ->
+                    def manifestPath = fs.getPath("META-INF/MANIFEST.MF")
+                    if (java.nio.file.Files.exists(manifestPath)) {
+                        def manifest = new java.util.jar.Manifest(java.nio.file.Files.newInputStream(manifestPath))
+                        manifest.mainAttributes.putValue("MixinConfigs", "${project.findProperty('mod_id') ?: 'evv'}.mixins_forge.json")
+                        java.nio.file.Files.newOutputStream(manifestPath).withCloseable { os ->
+                            manifest.write(os)
+                        }
+                        println "Updated Universal JAR MANIFEST.MF: MixinConfigs = ${project.findProperty('mod_id') ?: 'evv'}.mixins_forge.json"
+                    }
+                }
+            }
+        }
     }
 }
 
